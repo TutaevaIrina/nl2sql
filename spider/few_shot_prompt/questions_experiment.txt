@@ -1,0 +1,69 @@
+Question 23:  Show the stadium name and the number of concerts in each stadium. ||| concert_singer
+Question 24:  For each stadium, how many concerts play there? ||| concert_singer
+Question 36:  List singer names and number of concerts for each singer. ||| concert_singer
+Question 37:  What are the names of the singers and number of concerts for each person? ||| concert_singer
+Question 64:  Find the ID of students who do not have a cat pet. ||| pets_1
+Question 76:  Find the first name and age of students who have a pet. ||| pets_1
+Question 107:  What is the name of each continent and how many car makers are there in each one? ||| car_1
+Question 114:  How many car makers are there in France? ||| car_1
+Question 115:  What is the number of makers of cars in France? ||| car_1
+Question 116:  How many car models are produced in the USA? ||| car_1
+Question 117:  What is the count of the car models produced in the United States? ||| car_1
+Question 130:  Which countries in Europe have at least 3 car manufacturers? ||| car_1
+Question 131:  What are the names of all European countries with at least 3 manufacturers? ||| car_1
+Question 159: For a volvo model , how many cylinders does the version with least accelerate have ? ||| car_1
+Question 172: Which models are lighter than 3500 but not built by the 'Ford Motor Company ' ? ||| car_1
+Question 230: Which airline has most number of flights? ||| flight_2
+Question 232: Find the abbreviation and country of the airline that has fewest number of flights? ||| flight_2
+Question 233: What is the abbreviation of the airline with the fewest flights and what country is it in? ||| flight_2
+Question 288: Find the number of employees hired in each shop; show the shop name as well. ||| employee_hire_evaluation
+Question 289: For each shop, return the number of employees working there and the name of the shop. ||| employee_hire_evaluation
+Question 310: Show all template IDs and the number of documents using each template. ||| cre_Doc_Template_Mgt
+Question 312: What is the ID and type code for the template used by the most documents? ||| cre_Doc_Template_Mgt
+Question 313: Return the ID and type code of the template that is used for the greatest number of documents. ||| cre_Doc_Template_Mgt
+Question 342: Show all template type codes and the number of documents using each type. ||| cre_Doc_Template_Mgt
+Question 343: What are the different template type codes, and how many documents use each type? ||| cre_Doc_Template_Mgt
+Question 346: Show all template type codes that are not used by any document. ||| cre_Doc_Template_Mgt
+Question 347: What are the codes of template types that are not used for any document? ||| cre_Doc_Template_Mgt
+Question 368: Show all document IDs and the number of paragraphs in each document. Order by document ID. ||| cre_Doc_Template_Mgt
+Question 370: Show all document IDs, names, and the number of paragraphs in each document. ||| cre_Doc_Template_Mgt
+Question 371: What are the IDs and names of each document, as well as the number of paragraphs in each? ||| cre_Doc_Template_Mgt
+Question 406: Show names of teachers and the number of courses they teach. ||| course_teach
+Question 407: What are the names of the teachers and how many courses do they teach? ||| course_teach
+Question 420: Find the ID, name, and age for visitors who visited some museums more than once. ||| museum_visit
+Question 451: How many matches were played in 2013 or 2016? ||| wta_1
+Question 464: Find the name and rank points of the winner who won the most times. ||| wta_1
+Question 465: What is the name of the winner who has won the most matches, and how many rank points does this player have? ||| wta_1
+Question 471: What are the first names of all players, and their average rankings? ||| wta_1
+Question 473: What are the first names of all players, and their total ranking points? ||| wta_1
+Question 527: What are the names and ids of every course with less than 2 sections? ||| student_transcripts_tracking
+Question 536: Who is enrolled in a Bachelor degree program? List the first name, middle name, last name. ||| student_transcripts_tracking
+Question 537: What are the first, middle, and last names for everybody enrolled in a Bachelors program? ||| student_transcripts_tracking
+Question 548: What is the name of the course with the most number of enrollments? ||| student_transcripts_tracking
+Question 549: What is the name of the course with the most students enrolled? ||| student_transcripts_tracking
+Question 573: What is the maximum number of times that a course shows up in different transcripts, and what is that course's enrollment id? ||| student_transcripts_tracking
+Question 633: What are the package options and the name of the series for the TV Channel that supports high-definition TV? ||| tvshow
+Question 637: What are the countries that are not playing cartoons written by Todd Casey? ||| tvshow
+Question 638: Find the series name and country of the TV channel that is playing some cartoons directed by Ben Jones and Michael Chang? ||| tvshow
+Question 699: What is the area code in which the most voters voted? ||| voter_1
+Question 701: List the area codes in which voters voted both for the contestant "Tabatha Gehling" and the contestant "Kelly Clauss." ||| voter_1
+Question 731: What is the average GNP and total population in all nations whose government is US territory? ||| world_1
+Question 732: Give the mean GNP and total population of nations which are considered US territory. ||| world_1
+Question 741: What is the name of the country that speaks the largest number of languages? ||| world_1
+Question 742: Give the name of the nation that uses the greatest number of languages. ||| world_1
+Question 780: Return the country codes for countries that do not speak English. ||| world_1
+Question 798: What are the different government forms and what is the total population of each for government forms that have an average life expectancy greater than 72? ||| world_1
+Question 821: What are the codes of countries where Spanish is spoken by the largest percentage of people? ||| world_1
+Question 845: Show the name of the conductor that has conducted the most number of orchestras. ||| orchestra
+Question 867: Show all the grades of the high schoolers. ||| network_1
+Question 884: How many friends does each student have? ||| network_1
+Question 885: Show the names of high school students and their corresponding number of friends. ||| network_1
+Question 886: What are the names of the high schoolers and how many friends does each have? ||| network_1
+Question 921: What is the average age of the dogs who have gone through any treatments? ||| dog_kennels
+Question 922: Find the average age of the dogs who went through treatments. ||| dog_kennels
+Question 982: Find the number of owners who do not own any dogs at this moment. ||| dog_kennels
+Question 997: What are all the possible breed type and size type combinations? ||| dog_kennels
+Question 999: List the first name of all the professionals along with the description of the treatment they have done. ||| dog_kennels
+Question 1000: What are each professional's first name and description of the treatment they have performed? ||| dog_kennels
+Question 1025:  Show the names of singers and the total sales of their songs . ||| singer
+Question 1034:  What are the names of properties that are either houses or apartments with more than 1 room ? ||| real_estate_properties

@@ -1,0 +1,451 @@
+Question 23:  Show the stadium name and the number of concerts in each stadium. ||| concert_singer
+SQL: SELECT s.Name AS stadium_name, COUNT(c.concert_ID) AS number_of_concerts
+FROM stadium s
+LEFT JOIN concert c ON s.Stadium_ID = c.Stadium_ID
+GROUP BY s.Stadium_ID, s.Name;
+
+Question 24:  For each stadium, how many concerts play there? ||| concert_singer
+SQL: SELECT s.Name AS Stadium_Name, COUNT(c.concert_ID) AS Concert_Count
+FROM stadium s
+LEFT JOIN concert c ON s.Stadium_ID = c.Stadium_ID
+GROUP BY s.Stadium_ID, s.Name;
+
+Question 37:  What are the names of the singers and number of concerts for each person? ||| concert_singer
+SQL: SELECT s.Name, COUNT(sc.concert_ID) AS number_of_concerts
+FROM singer s
+JOIN singer_in_concert sc ON s.Singer_ID = sc.Singer_ID
+GROUP BY s.Singer_ID, s.Name;
+
+Question 64:  Find the ID of students who do not have a cat pet. ||| pets_1
+SQL: SELECT s.StuID 
+FROM Student s 
+WHERE s.StuID NOT IN (
+    SELECT hp.StuID 
+    FROM Has_Pet hp 
+    JOIN Pets p ON hp.PetID = p.PetID 
+    WHERE p.PetType = 'cat'
+);
+
+Question 76:  Find the first name and age of students who have a pet. ||| pets_1
+SQL: SELECT s.Fname, s.Age 
+FROM Student s
+JOIN Has_Pet hp ON s.StuID = hp.StuID;
+
+Question 107:  What is the name of each continent and how many car makers are there in each one? ||| car_1
+SQL: SELECT co.Continent, COUNT(cm.Id) AS car_maker_count
+FROM continents co
+JOIN countries c ON co.ContId = c.Continent
+JOIN car_makers cm ON c.CountryId = cm.Country
+GROUP BY co.Continent;
+
+Question 114:  How many car makers are there in France? ||| car_1
+SQL: SELECT COUNT(*) 
+FROM car_makers 
+WHERE Country = 'France';
+
+Question 115:  What is the number of makers of cars in France? ||| car_1
+SQL: SELECT COUNT(DISTINCT cm.Id) 
+FROM car_makers cm
+JOIN countries c ON cm.Country = c.CountryName
+WHERE c.CountryName = 'France';
+
+Question 116:  How many car models are produced in the USA? ||| car_1
+SQL: SELECT COUNT(DISTINCT ml.ModelId) 
+FROM model_list ml
+JOIN car_makers cm ON ml.Maker = cm.Id
+WHERE cm.Country = 'USA';
+
+Question 117:  What is the count of the car models produced in the United States? ||| car_1
+SQL: SELECT COUNT(*) 
+FROM model_list ml
+JOIN car_makers cm ON ml.Maker = cm.Id
+WHERE cm.Country = 'United States';
+
+Question 130:  Which countries in Europe have at least 3 car manufacturers? ||| car_1
+SQL: SELECT co.CountryName
+FROM countries co
+JOIN car_makers cm ON co.CountryId = cm.Country
+JOIN continents con ON co.Continent = con.ContId
+WHERE con.Continent = 'Europe'
+GROUP BY co.CountryName
+HAVING COUNT(DISTINCT cm.Maker) >= 3;
+
+Question 131:  What are the names of all European countries with at least 3 manufacturers? ||| car_1
+SQL: SELECT co.CountryName
+FROM countries co
+JOIN car_makers cm ON co.CountryId = cm.Country
+JOIN continents c ON co.Continent = c.ContId
+WHERE c.Continent = 'Europe'
+GROUP BY co.CountryName
+HAVING COUNT(DISTINCT cm.Id) >= 3;
+
+Question 159: For a volvo model , how many cylinders does the version with least accelerate have ? ||| car_1
+SQL: SELECT c.Cylinders 
+FROM cars_data c
+JOIN model_list m ON c.Id = m.ModelId
+JOIN car_makers cm ON m.Maker = cm.Id
+WHERE cm.Maker = 'Volvo'
+ORDER BY c.Accelerate ASC
+LIMIT 1;
+
+Question 172: Which models are lighter than 3500 but not built by the 'Ford Motor Company ' ? ||| car_1
+SQL: SELECT ml.Model 
+FROM model_list ml
+JOIN car_makers cm ON ml.Maker = cm.Id
+JOIN cars_data cd ON ml.Model = cd.Id
+WHERE cd.Weight < 3500 AND cm.FullName != 'Ford Motor Company';
+
+Question 230: Which airline has most number of flights? ||| flight_2
+SQL: SELECT a.Airline, COUNT(f.FlightNo) AS flight_count
+FROM airlines a
+JOIN flights f ON a.uid = f.Airline
+GROUP BY a.Airline
+ORDER BY flight_count DESC
+LIMIT 1;
+
+Question 232: Find the abbreviation and country of the airline that has fewest number of flights? ||| flight_2
+SQL: SELECT a.Abbreviation, a.Country
+FROM airlines a
+JOIN flights f ON a.uid = f.Airline
+GROUP BY a.uid
+ORDER BY COUNT(f.FlightNo) ASC
+LIMIT 1;
+
+Question 233: What is the abbreviation of the airline with the fewest flights and what country is it in? ||| flight_2
+SQL: SELECT a.Abbreviation, a.Country
+FROM airlines a
+JOIN flights f ON a.uid = f.Airline
+GROUP BY a.uid
+ORDER BY COUNT(f.FlightNo) ASC
+LIMIT 1;
+
+Question 288: Find the number of employees hired in each shop; show the shop name as well. ||| employee_hire_evaluation
+SQL: SELECT s.Name AS Shop_Name, COUNT(h.Employee_ID) AS Number_of_Employees
+FROM shop s
+JOIN hiring h ON s.Shop_ID = h.Shop_ID
+GROUP BY s.Shop_ID, s.Name;
+
+Question 289: For each shop, return the number of employees working there and the name of the shop. ||| employee_hire_evaluation
+SQL: SELECT s.Name, COUNT(h.Employee_ID) AS number_of_employees
+FROM shop s
+JOIN hiring h ON s.Shop_ID = h.Shop_ID
+GROUP BY s.Shop_ID, s.Name;
+
+Question 310: Show all template IDs and the number of documents using each template. ||| cre_Doc_Template_Mgt
+SQL: SELECT t.Template_ID, COUNT(d.Document_ID) AS document_count
+FROM Templates t
+LEFT JOIN Documents d ON t.Template_ID = d.Template_ID
+GROUP BY t.Template_ID;
+
+Question 312: What is the ID and type code for the template used by the most documents? ||| cre_Doc_Template_Mgt
+SQL: SELECT t.Template_ID, t.Template_Type_Code
+FROM Templates t
+JOIN Documents d ON t.Template_ID = d.Template_ID
+GROUP BY t.Template_ID, t.Template_Type_Code
+ORDER BY COUNT(d.Document_ID) DESC
+LIMIT 1;
+
+Question 313: Return the ID and type code of the template that is used for the greatest number of documents. ||| cre_Doc_Template_Mgt
+SQL: SELECT t.Template_ID, t.Template_Type_Code
+FROM Templates t
+JOIN Documents d ON t.Template_ID = d.Template_ID
+GROUP BY t.Template_ID, t.Template_Type_Code
+ORDER BY COUNT(d.Document_ID) DESC
+LIMIT 1;
+
+Question 342: Show all template type codes and the number of documents using each type. ||| cre_Doc_Template_Mgt
+SQL: SELECT r.Template_Type_Code, COUNT(d.Document_ID) AS document_count
+FROM Ref_Template_Types r
+LEFT JOIN Templates t ON r.Template_Type_Code = t.Template_Type_Code
+LEFT JOIN Documents d ON t.Template_ID = d.Template_ID
+GROUP BY r.Template_Type_Code;
+
+Question 343: What are the different template type codes, and how many documents use each type? ||| cre_Doc_Template_Mgt
+SQL: SELECT t.Template_Type_Code, COUNT(d.Document_ID) AS document_count
+FROM Templates t
+JOIN Documents d ON t.Template_ID = d.Template_ID
+GROUP BY t.Template_Type_Code;
+
+Question 346: Show all template type codes that are not used by any document. ||| cre_Doc_Template_Mgt
+SQL: SELECT Template_Type_Code 
+FROM Ref_Template_Types 
+WHERE Template_Type_Code NOT IN (
+    SELECT DISTINCT t.Template_Type_Code 
+    FROM Templates t 
+    JOIN Documents d ON t.Template_ID = d.Template_ID
+);
+
+Question 347: What are the codes of template types that are not used for any document? ||| cre_Doc_Template_Mgt
+SQL: SELECT Template_Type_Code 
+FROM Ref_Template_Types 
+EXCEPT 
+SELECT DISTINCT t.Template_Type_Code 
+FROM Templates t 
+JOIN Documents d ON t.Template_ID = d.Template_ID;
+
+Question 368: Show all document IDs and the number of paragraphs in each document. Order by document ID. ||| cre_Doc_Template_Mgt
+SQL: SELECT d.Document_ID, COUNT(p.Paragraph_ID) AS Paragraph_Count
+FROM Documents d
+LEFT JOIN Paragraphs p ON d.Document_ID = p.Document_ID
+GROUP BY d.Document_ID
+ORDER BY d.Document_ID;
+
+Question 370: Show all document IDs, names, and the number of paragraphs in each document. ||| cre_Doc_Template_Mgt
+SQL: SELECT d.Document_ID, d.Document_Name, COUNT(p.Paragraph_ID) AS Paragraph_Count
+FROM Documents d
+LEFT JOIN Paragraphs p ON d.Document_ID = p.Document_ID
+GROUP BY d.Document_ID, d.Document_Name;
+
+Question 371: What are the IDs and names of each document, as well as the number of paragraphs in each? ||| cre_Doc_Template_Mgt
+SQL: SELECT d.Document_ID, d.Document_Name, COUNT(p.Paragraph_ID) AS Paragraph_Count
+FROM Documents d
+LEFT JOIN Paragraphs p ON d.Document_ID = p.Document_ID
+GROUP BY d.Document_ID, d.Document_Name;
+
+Question 406: Show names of teachers and the number of courses they teach. ||| course_teach
+SQL: t.Name, COUNT(ca.Course_ID) AS course_count
+FROM teacher t
+JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID
+GROUP BY t.Name;
+
+Question 407: What are the names of the teachers and how many courses do they teach? ||| course_teach
+SQL: SELECT t.Name, COUNT(ca.Course_ID) AS course_count
+FROM teacher t
+LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID
+GROUP BY t.Teacher_ID, t.Name;
+
+Question 420: Find the ID, name, and age for visitors who visited some museums more than once. ||| museum_visit
+SQL: SELECT v.ID, v.Name, v.Age
+FROM visitor v
+JOIN visit vi ON v.ID = vi.visitor_ID
+GROUP BY v.ID, v.Name, v.Age
+HAVING COUNT(DISTINCT vi.Museum_ID) > 1;
+
+Question 451: How many matches were played in 2013 or 2016? ||| wta_1
+SQL: SELECT COUNT(*) 
+FROM matches 
+WHERE year = 2013 OR year = 2016;
+
+Question 464: Find the name and rank points of the winner who won the most times. ||| wta_1
+SQL: SELECT winner_name, winner_rank_points 
+FROM matches 
+GROUP BY winner_id, winner_name, winner_rank_points 
+ORDER BY COUNT(*) DESC 
+LIMIT 1;
+
+Question 465: What is the name of the winner who has won the most matches, and how many rank points does this player have? ||| wta_1
+SQL: SELECT p.first_name || ' ' || p.last_name AS winner_name, r.ranking_points
+FROM players p
+JOIN (
+    SELECT winner_id, COUNT(*) AS win_count
+    FROM matches
+    GROUP BY winner_id
+    ORDER BY win_count DESC
+    LIMIT 1
+) AS top_winner ON p.player_id = top_winner.winner_id
+JOIN rankings r ON p.player_id = r.player_id
+ORDER BY r.ranking_date DESC
+LIMIT 1;
+
+Question 471: What are the first names of all players, and their average rankings? ||| wta_1
+SQL: SELECT p.first_name, AVG(r.ranking) AS average_ranking
+FROM players p
+JOIN rankings r ON p.player_id = r.player_id
+GROUP BY p.first_name;
+
+Question 536: Who is enrolled in a Bachelor degree program? List the first name, middle name, last name. ||| student_transcripts_tracking
+SQL: SELECT s.first_name, s.middle_name, s.last_name
+FROM Students s
+JOIN Student_Enrolment se ON s.student_id = se.student_id
+JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id
+WHERE dp.degree_summary_name LIKE '%Bachelor%';
+
+Question 537: What are the first, middle, and last names for everybody enrolled in a Bachelors program? ||| student_transcripts_tracking
+SQL: SELECT s.first_name, s.middle_name, s.last_name
+FROM Students s
+JOIN Student_Enrolment se ON s.student_id = se.student_id
+JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id
+WHERE dp.degree_summary_name LIKE '%Bachelors%';
+
+Question 548: What is the name of the course with the most number of enrollments? ||| student_transcripts_tracking
+SQL: SELECT c.course_name
+FROM Courses c
+JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY COUNT(sec.student_course_id) DESC
+LIMIT 1;
+
+Question 549: What is the name of the course with the most students enrolled? ||| student_transcripts_tracking
+SQL: SELECT c.course_name
+FROM Courses c
+JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY COUNT(sec.student_course_id) DESC
+LIMIT 1;
+
+Question 573: What is the maximum number of times that a course shows up in different transcripts, and what is that course's enrollment id? ||| student_transcripts_tracking
+SQL: SELECT sc.course_id, COUNT(tc.transcript_id) AS transcript_count
+FROM Student_Enrolment_Courses sc
+JOIN Transcript_Contents tc ON sc.student_course_id = tc.student_course_id
+GROUP BY sc.course_id
+ORDER BY transcript_count DESC
+LIMIT 1;
+
+Question 633: What are the package options and the name of the series for the TV Channel that supports high-definition TV? ||| tvshow
+SQL: SELECT Package_Option, series_name 
+FROM TV_Channel 
+WHERE Hight_definition_TV = 'Yes';
+
+Question 637: What are the countries that are not playing cartoons written by Todd Casey? ||| tvshow
+SQL: SELECT DISTINCT Country 
+FROM TV_Channel 
+WHERE id NOT IN (
+    SELECT Channel 
+    FROM Cartoon 
+    WHERE Written_by = 'Todd Casey'
+);
+
+Question 638: Find the series name and country of the TV channel that is playing some cartoons directed by Ben Jones and Michael Chang? ||| tvshow
+SQL: SELECT DISTINCT tc.series_name, tc.Country
+FROM TV_Channel tc
+JOIN Cartoon c ON tc.id = c.Channel
+WHERE c.Directed_by IN ('Ben Jones', 'Michael Chang');
+
+Question 699: What is the area code in which the most voters voted? ||| voter_1
+SQL: SELECT v.phone_number / 10000000 AS area_code, COUNT(*) AS vote_count
+FROM VOTES v
+GROUP BY area_code
+ORDER BY vote_count DESC
+LIMIT 1;
+
+Question 701: List the area codes in which voters voted both for the contestant "Tabatha Gehling" and the contestant "Kelly Clauss." ||| voter_1
+SQL: SELECT DISTINCT v1.phone_number / 10000 AS area_code
+FROM VOTES v1
+JOIN VOTES v2 ON v1.phone_number / 10000 = v2.phone_number / 10000
+JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number
+JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number
+WHERE c1.contestant_name = 'Tabatha Gehling' AND c2.contestant_name = 'Kelly Clauss';
+
+Question 731: What is the average GNP and total population in all nations whose government is US territory? ||| world_1
+SQL: SELECT AVG(GNP) AS average_gnp, SUM(Population) AS total_population
+FROM country
+WHERE GovernmentForm = 'US territory';
+
+Question 732: Give the mean GNP and total population of nations which are considered US territory. ||| world_1
+SQL: SELECT AVG(GNP) AS mean_gnp, SUM(Population) AS total_population
+FROM country
+WHERE HeadOfState = 'President of the United States';
+
+Question 741: What is the name of the country that speaks the largest number of languages? ||| world_1
+SQL: SELECT c.Name 
+FROM country c
+JOIN countrylanguage cl ON c.Code = cl.CountryCode
+GROUP BY c.Code, c.Name
+ORDER BY COUNT(cl.Language) DESC
+LIMIT 1;
+
+Question 742: Give the name of the nation that uses the greatest number of languages. ||| world_1
+SQL: SELECT c.Name 
+FROM country c
+JOIN countrylanguage cl ON c.Code = cl.CountryCode
+GROUP BY c.Code, c.Name
+ORDER BY COUNT(cl.Language) DESC
+LIMIT 1;
+
+Question 780: Return the country codes for countries that do not speak English. ||| world_1
+SQL: SELECT DISTINCT c.Code 
+FROM country c
+LEFT JOIN countrylanguage cl ON c.Code = cl.CountryCode AND cl.Language = 'English'
+WHERE cl.Language IS NULL;
+
+Question 798: What are the different government forms and what is the total population of each for government forms that have an average life expectancy greater than 72? ||| world_1
+SQL: SELECT GovernmentForm, SUM(Population) AS total_population
+FROM country
+GROUP BY GovernmentForm
+HAVING AVG(LifeExpectancy) > 72;
+
+Question 821: What are the codes of countries where Spanish is spoken by the largest percentage of people? ||| world_1
+SQL: SELECT CountryCode 
+FROM countrylanguage 
+WHERE Language = 'Spanish' 
+ORDER BY Percentage DESC 
+LIMIT 1;
+
+Question 845: Show the name of the conductor that has conducted the most number of orchestras. ||| orchestra
+SQL: SELECT c.Name
+FROM conductor c
+JOIN orchestra o ON c.Conductor_ID = o.Conductor_ID
+GROUP BY c.Conductor_ID, c.Name
+ORDER BY COUNT(DISTINCT o.Orchestra_ID) DESC
+LIMIT 1;
+
+Question 867: Show all the grades of the high schoolers. ||| network_1
+SQL: SELECT DISTINCT grade FROM Highschooler;
+
+Question 884: How many friends does each student have? ||| network_1
+SQL: SELECT h.ID, h.name, COUNT(f.friend_id) AS friend_count
+FROM Highschooler h
+LEFT JOIN Friend f ON h.ID = f.student_id
+GROUP BY h.ID, h.name;
+
+Question 885: Show the names of high school students and their corresponding number of friends. ||| network_1
+SQL: h.name, COUNT(f.friend_id) AS number_of_friends
+FROM Highschooler h
+LEFT JOIN Friend f ON h.ID = f.student_id
+GROUP BY h.ID, h.name;
+
+Question 886: What are the names of the high schoolers and how many friends does each have? ||| network_1
+SQL: SELECT h.name, COUNT(f.friend_id) AS friend_count
+FROM Highschooler h
+LEFT JOIN Friend f ON h.ID = f.student_id
+GROUP BY h.ID, h.name;
+
+Question 921: What is the average age of the dogs who have gone through any treatments? ||| dog_kennels
+SQL: SELECT AVG(CAST(age AS INTEGER)) AS average_age
+FROM Dogs d
+JOIN Treatments t ON d.dog_id = t.dog_id;
+
+Question 922: Find the average age of the dogs who went through treatments. ||| dog_kennels
+SQL: SELECT AVG(CAST(age AS INTEGER)) AS average_age
+FROM Dogs
+WHERE dog_id IN (SELECT DISTINCT dog_id FROM Treatments);
+
+Question 982: Find the number of owners who do not own any dogs at this moment. ||| dog_kennels
+SQL: SELECT COUNT(*) 
+FROM Owners o
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM Dogs d 
+    WHERE d.owner_id = o.owner_id 
+    AND d.date_departed IS NULL
+);
+
+Question 997: What are all the possible breed type and size type combinations? ||| dog_kennels
+SQL: SELECT DISTINCT b.breed_name, s.size_description
+FROM Breeds b
+CROSS JOIN Sizes s;
+
+Question 999: List the first name of all the professionals along with the description of the treatment they have done. ||| dog_kennels
+SQL: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+
+Question 1000: What are each professional's first name and description of the treatment they have performed? ||| dog_kennels
+SQL: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+
+Question 1025:  Show the names of singers and the total sales of their songs . ||| singer
+SQL: SELECT s.Name, SUM(so.Sales) AS Total_Sales
+FROM singer s
+JOIN song so ON s.Singer_ID = so.Singer_ID
+GROUP BY s.Name;
+
+Question 1034:  What are the names of properties that are either houses or apartments with more than 1 room ? ||| real_estate_properties
+SQL: SELECT property_name 
+FROM Properties 
+WHERE (property_type_code = 'house' OR property_type_code = 'apartment') 
+AND room_count > 1;
+

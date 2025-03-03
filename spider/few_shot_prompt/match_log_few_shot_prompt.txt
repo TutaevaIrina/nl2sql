@@ -1,0 +1,55 @@
+Gold Query: SELECT DISTINCT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid
+Gold Result: [('Linda', 18), ('Tracy', 19)]
+Predicted Query: SELECT DISTINCT s.Fname, s.Age FROM Student s JOIN Has_Pet hp ON s.StuID = hp.StuID
+Predicted Result: [('Linda', 18), ('Tracy', 19)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Continent ,  count(*) FROM CONTINENTS AS T1 JOIN COUNTRIES AS T2 ON T1.ContId  =  T2.continent JOIN car_makers AS T3 ON T2.CountryId  =  T3.Country GROUP BY T1.Continent;
+Gold Result: [('america', 4), ('asia', 7), ('europe', 11)]
+Predicted Query: SELECT c.Continent, COUNT(cm.Id) AS NumberOfCarMakers FROM continents c JOIN countries co ON c.ContId = co.Continent JOIN car_makers cm ON co.CountryId = cm.Country GROUP BY c.Continent
+Predicted Result: [('america', 4), ('asia', 7), ('europe', 11)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.CountryName FROM COUNTRIES AS T1 JOIN CONTINENTS AS T2 ON T1.Continent  =  T2.ContId JOIN CAR_MAKERS AS T3 ON T1.CountryId  =  T3.Country WHERE T2.Continent  =  'europe' GROUP BY T1.CountryName HAVING count(*)  >=  3;
+Gold Result: [('france',), ('germany',)]
+Predicted Query: SELECT co.CountryName FROM countries co JOIN car_makers cm ON co.CountryId = cm.Country JOIN continents con ON co.Continent = con.ContId WHERE LOWER(con.Continent) = LOWER('Europe') GROUP BY co.CountryName HAVING COUNT(DISTINCT cm.Maker) >= 3
+Predicted Result: [('france',), ('germany',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.CountryName FROM COUNTRIES AS T1 JOIN CONTINENTS AS T2 ON T1.Continent  =  T2.ContId JOIN CAR_MAKERS AS T3 ON T1.CountryId  =  T3.Country WHERE T2.Continent  =  'europe' GROUP BY T1.CountryName HAVING count(*)  >=  3;
+Gold Result: [('france',), ('germany',)]
+Predicted Query: SELECT co.CountryName FROM countries co JOIN car_makers cm ON co.CountryId = cm.Country JOIN continents con ON co.Continent = con.ContId WHERE LOWER(con.Continent) = LOWER('Europe') GROUP BY co.CountryName HAVING COUNT(DISTINCT cm.Id) >= 3
+Predicted Result: [('france',), ('germany',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT template_type_code FROM Templates EXCEPT SELECT template_type_code FROM Templates AS T1 JOIN Documents AS T2 ON T1.template_id  =  T2.template_id
+Gold Result: [('CV',)]
+Predicted Query: SELECT Template_Type_Code FROM Ref_Template_Types EXCEPT SELECT t.Template_Type_Code FROM Templates t JOIN Documents d ON t.Template_ID = d.Template_ID
+Predicted Result: [('CV',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT template_type_code FROM Templates EXCEPT SELECT template_type_code FROM Templates AS T1 JOIN Documents AS T2 ON T1.template_id  =  T2.template_id
+Gold Result: [('CV',)]
+Predicted Query: SELECT Template_Type_Code FROM Ref_Template_Types EXCEPT SELECT DISTINCT t.Template_Type_Code FROM Templates t JOIN Documents d ON t.Template_ID = d.Template_ID
+Predicted Result: [('CV',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT t1.id ,  t1.name ,  t1.age FROM visitor AS t1 JOIN visit AS t2 ON t1.id  =  t2.visitor_id GROUP BY t1.id HAVING count(*)  >  1
+Gold Result: [(3, 'Arjen Robben', 27), (5, 'Fernando Gago', 36), (6, 'Rafael van der Vaart', 25)]
+Predicted Query: SELECT v.ID, v.Name, v.Age FROM visitor v JOIN visit vi ON v.ID = vi.visitor_ID GROUP BY v.ID, v.Name, v.Age HAVING COUNT(DISTINCT vi.Museum_ID) > 1
+Predicted Result: [(3, 'Arjen Robben', 27), (5, 'Fernando Gago', 36), (6, 'Rafael van der Vaart', 25)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT count(*) FROM matches WHERE YEAR  =  2013 OR YEAR  =  2016
+Gold Result: [(170,)]
+Predicted Query: SELECT COUNT(*) AS match_count FROM matches WHERE year IN (2013, 2016)
+Predicted Result: [(170,)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT package_option ,  series_name FROM TV_Channel WHERE hight_definition_TV  =  "yes"
+Gold Result: [('Sky Famiglia + Sky HD', 'MTV Live HD')]
+Predicted Query: SELECT Package_Option, series_name FROM TV_Channel WHERE LOWER(Hight_definition_TV) = LOWER('yes')
+Predicted Result: [('Sky Famiglia + Sky HD', 'MTV Live HD')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Gold Result: [(212,), (315,), (347,), (516,), (518,), (585,), (607,), (631,), (646,), (716,), (718,), (845,), (914,), (917,)]
+Predicted Query: SELECT DISTINCT acs.area_code FROM VOTES v1 JOIN AREA_CODE_STATE acs ON v1.state = acs.state JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number WHERE LOWER(c1.contestant_name) = LOWER('Tabatha Gehling') INTERSECT SELECT DISTINCT acs.area_code FROM VOTES v2 JOIN AREA_CODE_STATE acs ON v2.state = acs.state JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number WHERE LOWER(c2.contestant_name) = LOWER('Kelly Clauss')
+Predicted Result: [(212,), (315,), (347,), (516,), (518,), (585,), (607,), (631,), (646,), (716,), (718,), (845,), (914,), (917,)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT avg(age) FROM Dogs WHERE dog_id IN ( SELECT dog_id FROM Treatments )
+Gold Result: [(5.111111111111111,)]
+Predicted Query: SELECT AVG(CAST(age AS INTEGER)) AS average_age FROM Dogs WHERE dog_id IN (SELECT DISTINCT dog_id FROM Treatments)
+Predicted Result: [(5.111111111111111,)]
+--------------------------------------------------------------------------------

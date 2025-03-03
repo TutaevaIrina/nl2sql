@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "nl2sql"
+version = "0.1.0"
+description = ""
+authors = ["TutaevaIrina <irina.tutaeva@novatec-gmbh.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+streamlit = "^1.38.0"
+langchain = "^0.2.14"
+pydantic = "^2.8.2"
+pydantic-settings = "^2.4.0"
+openai = "^1.43.0"
+langchain-community = "^0.2.15"
+langchain-experimental = "^0.0.64"
+langchain-openai = "^0.1.23"
+mariadb = "^1.1.10"
+pymysql = "^1.1.1"
+portkey-ai = "^1.9.2"
+logging = "^0.4.9.6"
+sqlparse = "^0.5.2"
+moz-sql-parser = "^4.40.21126"
+nltk = "^3.9.1"
+charset-normalizer = "^3.4.0"
+argparse = "^1.4.0"
+python-dotenv = "^1.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+ruff = "^0.6.2"
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

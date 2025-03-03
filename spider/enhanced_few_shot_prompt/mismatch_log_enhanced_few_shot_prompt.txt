@@ -1,0 +1,120 @@
+Gold Query: SELECT count(*) FROM MODEL_LIST AS T1 JOIN CAR_MAKERS AS T2 ON T1.Maker  =  T2.Id JOIN COUNTRIES AS T3 ON T2.Country  =  T3.CountryId WHERE T3.CountryName  =  'usa';
+Gold Result: [(13,)]
+Predicted Query: SELECT COUNT(DISTINCT ml.Model) AS NumberOfCarModels FROM model_list ml JOIN car_makers cm ON ml.Maker = cm.Id JOIN countries c ON cm.Country = c.CountryId WHERE LOWER(c.CountryName) = LOWER('United States')
+Predicted Result: [(0,)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Airline FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline ORDER BY count(*) DESC LIMIT 1
+Gold Result: [('Virgin America',)]
+Predicted Query: SELECT a.Airline FROM airlines a JOIN flights f ON a.uid = f.Airline GROUP BY a.Airline HAVING COUNT(f.FlightNo) = (SELECT MAX(flight_count) FROM (SELECT COUNT(f.FlightNo) AS flight_count FROM flights f GROUP BY f.Airline) AS SubQuery)
+Predicted Result: [('AirTran Airways',), ('Allegiant Air',), ('American Airlines',), ('Continental Airlines',), ('Delta Airlines',), ('Frontier Airlines',), ('JetBlue Airways',), ('Northwest Airlines',), ('Southwest Airlines',), ('US Airways',), ('United Airlines',), ('Virgin America',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Abbreviation ,  T1.Country FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline ORDER BY count(*) LIMIT 1
+Gold Result: [('AirTran', 'USA')]
+Predicted Query: SELECT a.Abbreviation, a.Country FROM airlines a JOIN flights f ON a.uid = f.Airline GROUP BY a.uid HAVING COUNT(f.FlightNo) = (SELECT MIN(flight_count) FROM (SELECT COUNT(f.FlightNo) AS flight_count FROM flights f GROUP BY f.Airline) AS SubQuery)
+Predicted Result: [('UAL', 'USA'), ('USAir', 'USA'), ('Delta', 'USA'), ('Southwest', 'USA'), ('American', 'USA'), ('Northwest', 'USA'), ('Continental', 'USA'), ('JetBlue', 'USA'), ('Frontier', 'USA'), ('AirTran', 'USA'), ('Allegiant', 'USA'), ('Virgin', 'USA')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Abbreviation ,  T1.Country FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline ORDER BY count(*) LIMIT 1
+Gold Result: [('AirTran', 'USA')]
+Predicted Query: SELECT a.Abbreviation, a.Country FROM airlines a JOIN flights f ON a.uid = f.Airline GROUP BY a.uid HAVING COUNT(f.FlightNo) = (SELECT MIN(flight_count) FROM (SELECT COUNT(f.FlightNo) AS flight_count FROM flights f GROUP BY f.Airline) AS SubQuery)
+Predicted Result: [('UAL', 'USA'), ('USAir', 'USA'), ('Delta', 'USA'), ('Southwest', 'USA'), ('American', 'USA'), ('Northwest', 'USA'), ('Continental', 'USA'), ('JetBlue', 'USA'), ('Frontier', 'USA'), ('AirTran', 'USA'), ('Allegiant', 'USA'), ('Virgin', 'USA')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.template_id ,  T2.Template_Type_Code FROM Documents AS T1 JOIN Templates AS T2 ON T1.template_id  =  T2.template_id GROUP BY T1.template_id ORDER BY count(*) DESC LIMIT 1
+Gold Result: [(25, 'PP')]
+Predicted Query: SELECT T.Template_ID, T.Template_Type_Code FROM Templates T JOIN Documents D ON T.Template_ID = D.Template_ID GROUP BY T.Template_ID, T.Template_Type_Code HAVING COUNT(D.Document_ID) = (SELECT MAX(DocumentCount) FROM (SELECT COUNT(Doc.Document_ID) AS DocumentCount FROM Documents Doc GROUP BY Doc.Template_ID) AS SubQuery)
+Predicted Result: [(11, 'BK'), (14, 'AD'), (25, 'PP')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.template_id ,  T2.Template_Type_Code FROM Documents AS T1 JOIN Templates AS T2 ON T1.template_id  =  T2.template_id GROUP BY T1.template_id ORDER BY count(*) DESC LIMIT 1
+Gold Result: [(25, 'PP')]
+Predicted Query: SELECT T.Template_ID, T.Template_Type_Code FROM Templates T JOIN Documents D ON T.Template_ID = D.Template_ID GROUP BY T.Template_ID, T.Template_Type_Code HAVING COUNT(D.Document_ID) = (SELECT MAX(DocumentCount) FROM (SELECT COUNT(Doc.Document_ID) AS DocumentCount FROM Templates Temp JOIN Documents Doc ON Temp.Template_ID = Doc.Template_ID GROUP BY Temp.Template_ID) AS SubQuery)
+Predicted Result: [(11, 'BK'), (14, 'AD'), (25, 'PP')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT winner_name ,  winner_rank_points FROM matches GROUP BY winner_name ORDER BY count(*) DESC LIMIT 1
+Gold Result: [('Angelique Kerber', 3715)]
+Predicted Query: SELECT m.winner_name, SUM(m.winner_rank_points) AS total_rank_points FROM matches m GROUP BY m.winner_id, m.winner_name HAVING COUNT(m.winner_id) = (SELECT MAX(win_count) FROM (SELECT COUNT(winner_id) AS win_count FROM matches GROUP BY winner_id) AS subquery)
+Predicted Result: [('Angelique Kerber', 134495)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT winner_name ,  winner_rank_points FROM matches GROUP BY winner_name ORDER BY count(*) DESC LIMIT 1
+Gold Result: [('Angelique Kerber', 3715)]
+Predicted Query: SELECT p.first_name, p.last_name, SUM(m.winner_rank_points) AS total_rank_points FROM players p JOIN matches m ON p.player_id = m.winner_id GROUP BY p.player_id, p.first_name, p.last_name HAVING COUNT(m.winner_id) = (SELECT MAX(match_count) FROM (SELECT COUNT(winner_id) AS match_count FROM matches GROUP BY winner_id) AS subquery)
+Predicted Result: [('Angelique', 'Kerber', 134495)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.course_name ,  T1.course_id FROM Courses AS T1 JOIN Sections AS T2 ON T1.course_id  =  T2.course_id GROUP BY T1.course_id HAVING count(*)  <=  2
+Gold Result: [('ds', 1), ('math', 2), ('en', 4), ('fr', 5), ('la', 6), ('cal', 7), ('nlp', 8), ('dl', 9), ('ml', 10), ('db', 12), ('pl', 14)]
+Predicted Query: SELECT c.course_id, c.course_name FROM Courses c JOIN Sections s ON c.course_id = s.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(s.section_id) < 2
+Predicted Result: [(2, 'math'), (4, 'en'), (6, 'la'), (7, 'cal'), (9, 'dl'), (10, 'ml'), (12, 'db')]
+--------------------------------------------------------------------------------
+Gold Query: SELECT DISTINCT T1.first_name ,  T1.middle_name ,  T1.last_name FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id JOIN Degree_Programs AS T3 ON T2.degree_program_id  =  T3.degree_program_id WHERE T3.degree_summary_name  =  'Bachelor'
+Gold Result: [('Reva', 'Golda', 'Osinski'), ('Frida', 'Aisha', 'Huel'), ('Jarvis', 'Aaliyah', 'Carroll'), ('Milton', 'Vaughn', 'Christiansen'), ('Stanford', 'Mona', 'Rogahn')]
+Predicted Query: SELECT DISTINCT S.first_name, S.middle_name, S.last_name FROM Students S JOIN Student_Enrolment SE ON S.student_id = SE.student_id JOIN Degree_Programs DP ON SE.degree_program_id = DP.degree_program_id WHERE LOWER(DP.degree_summary_name) LIKE '%bachelors%'
+Predicted Result: []
+--------------------------------------------------------------------------------
+Gold Query: SELECT  T1.course_name FROM Courses AS T1 JOIN Student_Enrolment_Courses AS T2 ON T1.course_id  =  T2.course_id GROUP BY T1.course_name ORDER BY count(*) DESC LIMIT 1
+Gold Result: [('rs',)]
+Predicted Query: SELECT c.course_name FROM Courses c JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(sec.student_course_id) = (SELECT MAX(enrollment_count) FROM (SELECT COUNT(sec_sub.student_course_id) AS enrollment_count FROM Student_Enrolment_Courses sec_sub GROUP BY sec_sub.course_id) AS SubQuery)
+Predicted Result: [('math',), ('la',), ('ml',), ('rs',), ('pl',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT  T1.course_name FROM Courses AS T1 JOIN Student_Enrolment_Courses AS T2 ON T1.course_id  =  T2.course_id GROUP BY T1.course_name ORDER BY count(*) DESC LIMIT 1
+Gold Result: [('rs',)]
+Predicted Query: SELECT c.course_name FROM Courses c JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(sec.student_course_id) = (SELECT MAX(student_count) FROM (SELECT COUNT(sec_sub.student_course_id) AS student_count FROM Student_Enrolment_Courses sec_sub GROUP BY sec_sub.course_id) AS SubQuery)
+Predicted Result: [('math',), ('la',), ('ml',), ('rs',), ('pl',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT country FROM TV_Channel EXCEPT SELECT T1.country FROM TV_Channel AS T1 JOIN cartoon AS T2 ON T1.id = T2.Channel WHERE T2.written_by  =  'Todd Casey'
+Gold Result: [('Poland',)]
+Predicted Query: SELECT DISTINCT TC.Country FROM TV_Channel TC WHERE TC.id NOT IN (SELECT C.Channel FROM Cartoon C WHERE C.Written_by = 'Todd Casey')
+Predicted Result: [('Italy',), ('United Kingdom',), ('Poland',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.area_code FROM area_code_state AS T1 JOIN votes AS T2 ON T1.state  =  T2.state GROUP BY T1.area_code ORDER BY count(*) DESC LIMIT 1
+Gold Result: [(212,)]
+Predicted Query: SELECT T1.area_code, COUNT(*) FROM AREA_CODE_STATE AS T1 JOIN VOTES AS T2 ON T1.state = T2.state GROUP BY T1.area_code HAVING COUNT(*) = (SELECT MAX(vote_count) FROM (SELECT COUNT(*) AS vote_count FROM AREA_CODE_STATE AS S1 JOIN VOTES AS S2 ON S1.state = S2.state GROUP BY S1.area_code) AS SubQuery)
+Predicted Result: [(212, 2), (315, 2), (347, 2), (516, 2), (518, 2), (585, 2), (607, 2), (631, 2), (646, 2), (716, 2), (718, 2), (845, 2), (914, 2), (917, 2)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Gold Result: [(212,), (315,), (347,), (516,), (518,), (585,), (607,), (631,), (646,), (716,), (718,), (845,), (914,), (917,)]
+Predicted Query: SELECT DISTINCT acs.area_code FROM AREA_CODE_STATE acs JOIN VOTES v1 ON acs.state = v1.state JOIN VOTES v2 ON acs.state = v2.state JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number WHERE c1.contestant_name = 'Tabatha Gehling' AND c2.contestant_name = 'Kelly Clauss' AND v1.phone_number = v2.phone_number
+Predicted Result: []
+--------------------------------------------------------------------------------
+Gold Query: SELECT avg(GNP) ,  sum(population) FROM country WHERE GovernmentForm  =  "US Territory"
+Gold Result: [(510.3333333333333, 329000)]
+Predicted Query: SELECT AVG(GNP) AS MeanGNP, SUM(Population) AS TotalPopulation FROM country WHERE LOWER(Region) = LOWER('US territory')
+Predicted Result: [(None, None)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode GROUP BY T1.Name ORDER BY COUNT(*) DESC LIMIT 1
+Gold Result: [('United States',)]
+Predicted Query: SELECT c.Name FROM country c JOIN countrylanguage cl ON c.Code = cl.CountryCode GROUP BY c.Code HAVING COUNT(cl.Language) = (SELECT MAX(LanguageCount) FROM (SELECT COUNT(cl_sub.Language) AS LanguageCount FROM country c_sub JOIN countrylanguage cl_sub ON c_sub.Code = cl_sub.CountryCode GROUP BY c_sub.Code) AS SubQuery)
+Predicted Result: [('Canada',), ('China',), ('India',), ('Russian Federation',), ('United States',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode GROUP BY T1.Name ORDER BY COUNT(*) DESC LIMIT 1
+Gold Result: [('United States',)]
+Predicted Query: SELECT c.Name FROM country c JOIN countrylanguage cl ON c.Code = cl.CountryCode GROUP BY c.Code HAVING COUNT(cl.Language) = (SELECT MAX(LanguageCount) FROM (SELECT COUNT(cl_sub.Language) AS LanguageCount FROM country c_sub JOIN countrylanguage cl_sub ON c_sub.Code = cl_sub.CountryCode GROUP BY c_sub.Code) AS SubQuery)
+Predicted Result: [('Canada',), ('China',), ('India',), ('Russian Federation',), ('United States',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT CountryCode FROM countrylanguage EXCEPT SELECT CountryCode FROM countrylanguage WHERE LANGUAGE  =  "English"
+Gold Result: [('AFG',), ('AGO',), ('ALB',), ('AND',), ('ARE',), ('ARG',), ('ARM',), ('AUT',), ('AZE',), ('BDI',), ('BEL',), ('BEN',), ('BFA',), ('BGD',), ('BGR',), ('BHS',), ('BIH',), ('BLR',), ('BOL',), ('BRA',), ('BTN',), ('BWA',), ('CAF',), ('CHE',), ('CHL',), ('CHN',), ('CIV',), ('CMR',), ('COD',), ('COG',), ('COL',), ('COM',), ('CPV',), ('CRI',), ('CUB',), ('CYP',), ('CZE',), ('DEU',), ('DJI',), ('DMA',), ('DOM',), ('DZA',), ('ECU',), ('EGY',), ('ERI',), ('ESH',), ('ESP',), ('EST',), ('ETH',), ('FIN',), ('FJI',), ('FRA',), ('FRO',), ('FSM',), ('GAB',), ('GEO',), ('GHA',), ('GIN',), ('GLP',), ('GMB',), ('GNB',), ('GNQ',), ('GRC',), ('GRD',), ('GRL',), ('GTM',), ('GUF',), ('GUY',), ('HND',), ('HRV',), ('HTI',), ('HUN',), ('IDN',), ('IND',), ('IRN',), ('IRQ',), ('ISR',), ('ITA',), ('JAM',), ('JOR',), ('KAZ',), ('KEN',), ('KGZ',), ('KHM',), ('KIR',), ('KOR',), ('LAO',), ('LBN',), ('LBR',), ('LBY',), ('LIE',), ('LKA',), ('LTU',), ('LUX',), ('LVA',), ('MAR',), ('MDA',), ('MDG',), ('MEX',), ('MKD',), ('MLI',), ('MMR',), ('MNG',), ('MOZ',), ('MRT',), ('MTQ',), ('MUS',), ('MWI',), ('MYT',), ('NAM',), ('NCL',), ('NER',), ('NGA',), ('NIC',), ('NLD',), ('NPL',), ('OMN',), ('PAK',), ('PAN',), ('PCN',), ('PER',), ('PHL',), ('PNG',), ('POL',), ('PRK',), ('PRT',), ('PRY',), ('PSE',), ('PYF',), ('QAT',), ('REU',), ('ROM',), ('RUS',), ('RWA',), ('SAU',), ('SDN',), ('SEN',), ('SGP',), ('SJM',), ('SLB',), ('SLE',), ('SLV',), ('SMR',), ('SOM',), ('SPM',), ('STP',), ('SUR',), ('SVK',), ('SVN',), ('SWE',), ('SWZ',), ('SYR',), ('TCD',), ('TGO',), ('THA',), ('TJK',), ('TKM',), ('TMP',), ('TUN',), ('TUR',), ('TWN',), ('TZA',), ('UGA',), ('UKR',), ('URY',), ('UZB',), ('VAT',), ('VEN',), ('VNM',), ('WLF',), ('YEM',), ('YUG',), ('ZMB',)]
+Predicted Query: SELECT DISTINCT c.Code FROM country c WHERE c.Code NOT IN (SELECT cl.CountryCode FROM countrylanguage cl WHERE LOWER(cl.Language) = LOWER('English'))
+Predicted Result: [('AFG',), ('AGO',), ('ALB',), ('AND',), ('ARE',), ('ARG',), ('ARM',), ('ATA',), ('ATF',), ('AUT',), ('AZE',), ('BDI',), ('BEL',), ('BEN',), ('BFA',), ('BGD',), ('BGR',), ('BHS',), ('BIH',), ('BLR',), ('BOL',), ('BRA',), ('BTN',), ('BVT',), ('BWA',), ('CAF',), ('CHE',), ('CHL',), ('CHN',), ('CIV',), ('CMR',), ('COD',), ('COG',), ('COL',), ('COM',), ('CPV',), ('CRI',), ('CUB',), ('CYP',), ('CZE',), ('DEU',), ('DJI',), ('DMA',), ('DOM',), ('DZA',), ('ECU',), ('EGY',), ('ERI',), ('ESH',), ('ESP',), ('EST',), ('ETH',), ('FIN',), ('FJI',), ('FRA',), ('FRO',), ('FSM',), ('GAB',), ('GEO',), ('GHA',), ('GIN',), ('GLP',), ('GMB',), ('GNB',), ('GNQ',), ('GRC',), ('GRD',), ('GRL',), ('GTM',), ('GUF',), ('GUY',), ('HMD',), ('HND',), ('HRV',), ('HTI',), ('HUN',), ('IDN',), ('IND',), ('IOT',), ('IRN',), ('IRQ',), ('ISR',), ('ITA',), ('JAM',), ('JOR',), ('KAZ',), ('KEN',), ('KGZ',), ('KHM',), ('KIR',), ('KOR',), ('LAO',), ('LBN',), ('LBR',), ('LBY',), ('LIE',), ('LKA',), ('LTU',), ('LUX',), ('LVA',), ('MAR',), ('MDA',), ('MDG',), ('MEX',), ('MKD',), ('MLI',), ('MMR',), ('MNG',), ('MOZ',), ('MRT',), ('MTQ',), ('MUS',), ('MWI',), ('MYT',), ('NAM',), ('NCL',), ('NER',), ('NGA',), ('NIC',), ('NLD',), ('NPL',), ('OMN',), ('PAK',), ('PAN',), ('PCN',), ('PER',), ('PHL',), ('PNG',), ('POL',), ('PRK',), ('PRT',), ('PRY',), ('PSE',), ('PYF',), ('QAT',), ('REU',), ('ROM',), ('RUS',), ('RWA',), ('SAU',), ('SDN',), ('SEN',), ('SGP',), ('SGS',), ('SJM',), ('SLB',), ('SLE',), ('SLV',), ('SMR',), ('SOM',), ('SPM',), ('STP',), ('SUR',), ('SVK',), ('SVN',), ('SWE',), ('SWZ',), ('SYR',), ('TCD',), ('TGO',), ('THA',), ('TJK',), ('TKM',), ('TMP',), ('TUN',), ('TUR',), ('TWN',), ('TZA',), ('UGA',), ('UKR',), ('URY',), ('UZB',), ('VAT',), ('VEN',), ('VNM',), ('WLF',), ('YEM',), ('YUG',), ('ZMB',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Gold Result: [('ABW', 7.4), ('AND', 44.6), ('ARG', 96.8), ('BLZ', 31.6), ('BOL', 87.7), ('CAN', 0.7), ('CHL', 89.7), ('COL', 99.0), ('CRI', 97.5), ('CUB', 100.0), ('DOM', 98.0), ('ECU', 93.0), ('ESP', 74.4), ('FRA', 0.4), ('GTM', 64.7), ('HND', 97.2), ('MEX', 92.1), ('NIC', 97.6), ('PAN', 76.8), ('PER', 79.8), ('PRI', 51.3), ('PRY', 55.1), ('SLV', 100.0), ('SWE', 0.6), ('URY', 95.7), ('USA', 7.5), ('VEN', 96.9), ('VIR', 13.3)]
+Predicted Query: SELECT cl.CountryCode FROM countrylanguage cl WHERE cl.Language = 'Spanish' AND cl.Percentage = (SELECT MAX(cl_sub.Percentage) FROM countrylanguage cl_sub WHERE cl_sub.Language = 'Spanish')
+Predicted Result: [('CUB',), ('SLV',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T1.Name FROM conductor AS T1 JOIN orchestra AS T2 ON T1.Conductor_ID  =  T2.Conductor_ID GROUP BY T2.Conductor_ID ORDER BY COUNT(*) DESC LIMIT 1
+Gold Result: [('Michael Tilson Thomas',)]
+Predicted Query: SELECT c.Name FROM conductor c JOIN orchestra o ON c.Conductor_ID = o.Conductor_ID GROUP BY c.Conductor_ID HAVING COUNT(DISTINCT o.Orchestra_ID) = (SELECT MAX(OrchestraCount) FROM (SELECT COUNT(DISTINCT o_sub.Orchestra_ID) AS OrchestraCount FROM orchestra o_sub GROUP BY o_sub.Conductor_ID) AS SubQuery)
+Predicted Result: [('Antal Doráti',), ('Igor Stravinsky',), ('Colin Davis',), ('Paul Jorgensen',), ('Antal Brown',), ('Charles Dutoit',), ('Gerard Schwarz',), ('Pierre Boulez',), ('Valeri Gergiev',), ('Robert Craft',), ('Seiji Ozawa',), ('Michael Tilson Thomas',)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT student_id ,  count(*) FROM Friend GROUP BY student_id
+Gold Result: [(1101, 1), (1247, 2), (1304, 1), (1316, 1), (1381, 1), (1468, 2), (1501, 1), (1510, 2), (1661, 1), (1689, 2), (1709, 1), (1782, 3), (1911, 1), (1934, 1)]
+Predicted Query: SELECT H.ID, H.name, COUNT(F.friend_id) AS NumberOfFriends FROM Highschooler H JOIN Friend F ON H.ID = F.student_id GROUP BY H.ID, H.name
+Predicted Result: [(1101, 'Haley', 1), (1247, 'Alexis', 2), (1304, 'Jordan', 1), (1316, 'Austin', 1), (1381, 'Tiffany', 1), (1468, 'Kris', 2), (1501, 'Jessica', 1), (1510, 'Jordan', 2), (1661, 'Logan', 1), (1689, 'Gabriel', 2), (1709, 'Cassandra', 1), (1782, 'Andrew', 3), (1911, 'Gabriel', 1), (1934, 'Kyle', 1)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT T2.name ,  count(*) FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id GROUP BY T1.student_id
+Gold Result: [('Haley', 1), ('Alexis', 2), ('Jordan', 1), ('Austin', 1), ('Tiffany', 1), ('Kris', 2), ('Jessica', 1), ('Jordan', 2), ('Logan', 1), ('Gabriel', 2), ('Cassandra', 1), ('Andrew', 3), ('Gabriel', 1), ('Kyle', 1)]
+Predicted Query: SELECT H.name, COUNT(F.friend_id) AS NumberOfFriends FROM Highschooler H LEFT JOIN Friend F ON H.ID = F.student_id GROUP BY H.ID, H.name
+Predicted Result: [('John', 0), ('Haley', 1), ('Alexis', 2), ('Jordan', 1), ('Austin', 1), ('Tiffany', 1), ('Kris', 2), ('Jessica', 1), ('Jordan', 2), ('Brittany', 0), ('Logan', 1), ('Gabriel', 2), ('Cassandra', 1), ('Andrew', 3), ('Gabriel', 1), ('Kyle', 1)]
+--------------------------------------------------------------------------------
+Gold Query: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Gold Result: [('longacre',), ('parc coliseum',), ('parc east',), ('park',), ('renoir',), ('ten tower',), ('the cole',), ('vogue',)]
+Predicted Query: SELECT property_name FROM Properties WHERE (property_type_code = 'House' OR property_type_code = 'Apartment') AND room_count > 1
+Predicted Result: [('park',), ('parc east',), ('vogue',), ('longacre',), ('renoir',), ('ten tower',), ('parc coliseum',)]
+--------------------------------------------------------------------------------

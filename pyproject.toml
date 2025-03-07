@@ -25,6 +25,8 @@ nltk = "^3.9.1"
 charset-normalizer = "^3.4.0"
 argparse = "^1.4.0"
 python-dotenv = "^1.0.1"
+faiss-cpu = "^1.10.0"
+sqlalchemy = "^2.0.38"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,538 +1,69 @@
-Question 23:  Show the stadium name and the number of concerts in each stadium. ||| concert_singer
-SQL: SELECT s.Name AS Stadium_Name, COUNT(c.concert_ID) AS Number_of_Concerts
-FROM stadium s
-INNER JOIN concert c ON s.Stadium_ID = c.Stadium_ID
-GROUP BY s.Stadium_ID;
-
-Question 24:  For each stadium, how many concerts play there? ||| concert_singer
-SQL: SELECT s.Name AS Stadium_Name, COUNT(DISTINCT c.concert_ID) AS Number_of_Concerts
-FROM stadium s
-INNER JOIN concert c ON s.Stadium_ID = c.Stadium_ID
-GROUP BY s.Stadium_ID;
-
-Question 36:  List singer names and number of concerts for each singer. ||| concert_singer
-SQL: SELECT s.Name, COUNT(DISTINCT sic.concert_ID) AS Number_of_Concerts
-FROM singer s
-INNER JOIN singer_in_concert sic ON s.Singer_ID = sic.Singer_ID
-GROUP BY s.Name;
-
-Question 37:  What are the names of the singers and number of concerts for each person? ||| concert_singer
-SQL: SELECT s.Name, COUNT(DISTINCT sic.concert_ID) AS Number_of_Concerts
-FROM singer s
-INNER JOIN singer_in_concert sic ON s.Singer_ID = sic.Singer_ID
-GROUP BY s.Name;
-
-Question 64:  Find the ID of students who do not have a cat pet. ||| pets_1
-SQL: SELECT DISTINCT s.StuID
-FROM Student s
-WHERE s.StuID NOT IN (
-    SELECT hp.StuID
-    FROM Has_Pet hp
-    INNER JOIN Pets p ON hp.PetID = p.PetID
-    WHERE LOWER(p.PetType) = 'cat'
-);
-
-Question 76:  Find the first name and age of students who have a pet. ||| pets_1
-SQL: SELECT DISTINCT s.Fname, s.Age
-FROM Student s
-INNER JOIN Has_Pet hp ON s.StuID = hp.StuID;
-
-Question 107:  What is the name of each continent and how many car makers are there in each one? ||| car_1
-SQL: SELECT c.Continent, COUNT(DISTINCT cm.Id) AS CarMakerCount
-FROM continents c
-INNER JOIN countries co ON c.ContId = co.Continent
-INNER JOIN car_makers cm ON LOWER(cm.Country) = LOWER(co.CountryName)
-GROUP BY c.Continent;
-
-Question 114:  How many car makers are there in France? ||| car_1
-SQL: SELECT COUNT(DISTINCT cm.Id) AS NumberOfCarMakers
-FROM car_makers cm
-INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName)
-WHERE LOWER(c.CountryName) = 'france';
-
-Question 115:  What is the number of makers of cars in France? ||| car_1
-SQL: SELECT COUNT(DISTINCT cm.Id) AS NumberOfMakers
-FROM car_makers cm
-INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName)
-WHERE LOWER(c.CountryName) = 'france';
-
-Question 116:  How many car models are produced in the USA? ||| car_1
-SQL: SELECT COUNT(DISTINCT ml.ModelId) AS NumberOfModels
-FROM model_list ml
-INNER JOIN car_makers cm ON ml.Maker = cm.Id
-WHERE LOWER(cm.Country) = 'usa';
-
-Question 117:  What is the count of the car models produced in the United States? ||| car_1
-SQL: SELECT COUNT(DISTINCT ml.ModelId) AS ModelCount
-FROM model_list ml
-INNER JOIN car_makers cm ON ml.Maker = cm.Id
-INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName)
-WHERE LOWER(c.CountryName) = 'usa';
-
-Question 130:  Which countries in Europe have at least 3 car manufacturers? ||| car_1
-SQL: SELECT DISTINCT LOWER(countries.CountryName) AS CountryName
-FROM countries
-INNER JOIN continents ON countries.Continent = continents.ContId
-INNER JOIN car_makers ON LOWER(car_makers.Country) = LOWER(countries.CountryName)
-WHERE LOWER(continents.Continent) = 'europe'
-GROUP BY countries.CountryId
-HAVING COUNT(DISTINCT car_makers.Id) >= 3;
-
-Question 131:  What are the names of all European countries with at least 3 manufacturers? ||| car_1
-SQL: SELECT DISTINCT LOWER(countries.CountryName) AS CountryName
-FROM countries
-INNER JOIN car_makers ON LOWER(countries.CountryName) = LOWER(car_makers.Country)
-WHERE countries.Continent = (SELECT ContId FROM continents WHERE LOWER(Continent) = 'europe')
-GROUP BY countries.CountryName
-HAVING COUNT(DISTINCT car_makers.Id) >= 3;
-
-Question 159: For a volvo model , how many cylinders does the version with least accelerate have ? ||| car_1
-SQL: SELECT Cylinders
-FROM cars_data
-WHERE Id = (
-    SELECT MakeId
-    FROM car_names
-    WHERE LOWER(Make) = 'volvo'
-    ORDER BY Accelerate ASC
-    LIMIT 1
-)
-LIMIT 1;
-
-Question 172: Which models are lighter than 3500 but not built by the 'Ford Motor Company ' ? ||| car_1
-SQL: SELECT DISTINCT ml.Model
-FROM model_list ml
-INNER JOIN car_makers cm ON ml.Maker = cm.Id
-INNER JOIN car_names cn ON ml.Model = cn.Model
-INNER JOIN cars_data cd ON cn.MakeId = cd.Id
-WHERE cd.Weight < 3500
-AND LOWER(cm.FullName) != 'ford motor company'
-
-Question 230: Which airline has most number of flights? ||| flight_2
-SQL: SELECT a.Airline
-FROM airlines a
-INNER JOIN flights f ON a.uid = f.Airline
-GROUP BY a.Airline
-ORDER BY COUNT(f.FlightNo) DESC
-LIMIT 1;
-
-Question 232: Find the abbreviation and country of the airline that has fewest number of flights? ||| flight_2
-SQL: SELECT a.Abbreviation, a.Country
-FROM airlines a
-JOIN (
-    SELECT Airline, COUNT(*) AS flight_count
-    FROM flights
-    GROUP BY Airline
-    ORDER BY flight_count ASC
-    LIMIT 1
-) AS min_flights ON a.uid = min_flights.Airline;
-
-Question 233: What is the abbreviation of the airline with the fewest flights and what country is it in? ||| flight_2
-SQL: SELECT a.Abbreviation, a.Country
-FROM airlines a
-JOIN (
-    SELECT f.Airline, COUNT(*) AS flight_count
-    FROM flights f
-    GROUP BY f.Airline
-    ORDER BY flight_count ASC
-    LIMIT 1
-) AS min_flights ON a.uid = min_flights.Airline;
-
-Question 288: Find the number of employees hired in each shop; show the shop name as well. ||| employee_hire_evaluation
-SQL: SELECT s.Name AS Shop_Name, COUNT(DISTINCT h.Employee_ID) AS Number_of_Employees
-FROM shop s
-INNER JOIN hiring h ON s.Shop_ID = h.Shop_ID
-GROUP BY s.Shop_ID;
-
-Question 289: For each shop, return the number of employees working there and the name of the shop. ||| employee_hire_evaluation
-SQL: SELECT s.Name AS Shop_Name, COUNT(DISTINCT h.Employee_ID) AS Number_of_Employees
-FROM shop s
-INNER JOIN hiring h ON s.Shop_ID = h.Shop_ID
-GROUP BY s.Shop_ID;
-
-Question 310: Show all template IDs and the number of documents using each template. ||| cre_Doc_Template_Mgt
-SQL: SELECT 
-    t.Template_ID, 
-    COUNT(DISTINCT d.Document_ID) AS Number_of_Documents
-FROM 
-    Templates t
-INNER JOIN 
-    Documents d ON t.Template_ID = d.Template_ID
-GROUP BY 
-    t.Template_ID;
-
-Question 312: What is the ID and type code for the template used by the most documents? ||| cre_Doc_Template_Mgt
-SQL: SELECT t.Template_ID, t.Template_Type_Code
-FROM Templates t
-JOIN Documents d ON t.Template_ID = d.Template_ID
-GROUP BY t.Template_ID, t.Template_Type_Code
-ORDER BY COUNT(DISTINCT d.Document_ID) DESC
-LIMIT 1;
-
-Question 313: Return the ID and type code of the template that is used for the greatest number of documents. ||| cre_Doc_Template_Mgt
-SQL: SELECT t.Template_ID, t.Template_Type_Code
-FROM Templates t
-JOIN Documents d ON t.Template_ID = d.Template_ID
-GROUP BY t.Template_ID, t.Template_Type_Code
-ORDER BY COUNT(DISTINCT d.Document_ID) DESC
-LIMIT 1;
-
-Question 342: Show all template type codes and the number of documents using each type. ||| cre_Doc_Template_Mgt
-SQL: SELECT 
-    rtt.Template_Type_Code, 
-    COUNT(DISTINCT d.Document_ID) AS Number_of_Documents
-FROM 
-    Ref_Template_Types rtt
-INNER JOIN 
-    Templates t ON rtt.Template_Type_Code = t.Template_Type_Code
-INNER JOIN 
-    Documents d ON t.Template_ID = d.Template_ID
-GROUP BY 
-    rtt.Template_Type_Code;
-
-Question 343: What are the different template type codes, and how many documents use each type? ||| cre_Doc_Template_Mgt
-SQL: SELECT DISTINCT t.Template_Type_Code, COUNT(d.Document_ID) AS Document_Count
-FROM Templates t
-INNER JOIN Documents d ON t.Template_ID = d.Template_ID
-GROUP BY t.Template_Type_Code;
-
-Question 346: Show all template type codes that are not used by any document. ||| cre_Doc_Template_Mgt
-SQL: SELECT DISTINCT rtt.Template_Type_Code
-FROM Ref_Template_Types rtt
-LEFT JOIN Templates t ON rtt.Template_Type_Code = t.Template_Type_Code
-LEFT JOIN Documents d ON t.Template_ID = d.Template_ID
-WHERE d.Document_ID IS NULL;
-
-Question 347: What are the codes of template types that are not used for any document? ||| cre_Doc_Template_Mgt
-SQL: SELECT DISTINCT rtt.Template_Type_Code
-FROM Ref_Template_Types rtt
-LEFT JOIN Templates t ON rtt.Template_Type_Code = t.Template_Type_Code
-LEFT JOIN Documents d ON t.Template_ID = d.Template_ID
-WHERE d.Document_ID IS NULL;
-
-Question 368: Show all document IDs and the number of paragraphs in each document. Order by document ID. ||| cre_Doc_Template_Mgt
-SQL: SELECT 
-    d.Document_ID, 
-    COUNT(p.Paragraph_ID) AS Number_of_Paragraphs
-FROM 
-    Documents d
-INNER JOIN 
-    Paragraphs p ON d.Document_ID = p.Document_ID
-GROUP BY 
-    d.Document_ID
-ORDER BY 
-    d.Document_ID;
-
-Question 370: Show all document IDs, names, and the number of paragraphs in each document. ||| cre_Doc_Template_Mgt
-SQL: SELECT 
-    d.Document_ID, 
-    d.Document_Name, 
-    COUNT(p.Paragraph_ID) AS Number_of_Paragraphs
-FROM 
-    Documents d
-INNER JOIN 
-    Paragraphs p ON d.Document_ID = p.Document_ID
-GROUP BY 
-    d.Document_ID, 
-    d.Document_Name;
-
-Question 371: What are the IDs and names of each document, as well as the number of paragraphs in each? ||| cre_Doc_Template_Mgt
-SQL: SELECT 
-    d.Document_ID, 
-    d.Document_Name, 
-    COUNT(p.Paragraph_ID) AS Number_of_Paragraphs
-FROM 
-    Documents d
-INNER JOIN 
-    Paragraphs p ON d.Document_ID = p.Document_ID
-GROUP BY 
-    d.Document_ID, 
-    d.Document_Name;
-
-Question 406: Show names of teachers and the number of courses they teach. ||| course_teach
-SQL: SELECT t.Name, COUNT(DISTINCT ca.Course_ID) AS NumberOfCourses
-FROM teacher t
-INNER JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID
-GROUP BY t.Teacher_ID;
-
-Question 407: What are the names of the teachers and how many courses do they teach? ||| course_teach
-SQL: SELECT t.Name, COUNT(DISTINCT ca.Course_ID) AS Course_Count
-FROM teacher t
-INNER JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID
-GROUP BY t.Name;
-
-Question 420: Find the ID, name, and age for visitors who visited some museums more than once. ||| museum_visit
-SQL: SELECT DISTINCT v.ID, v.Name, v.Age
-FROM visitor v
-INNER JOIN visit vi ON v.ID = vi.visitor_ID
-GROUP BY v.ID, v.Name, v.Age
-HAVING COUNT(DISTINCT vi.Museum_ID) > 1;
-
-Question 451: How many matches were played in 2013 or 2016? ||| wta_1
-SQL: SELECT COUNT(DISTINCT match_num) 
-FROM matches 
-WHERE year IN (2013, 2016);
-
-Question 464: Find the name and rank points of the winner who won the most times. ||| wta_1
-SQL: SELECT p.first_name, p.last_name, m.winner_rank_points
-FROM players p
-INNER JOIN matches m ON p.player_id = m.winner_id
-GROUP BY m.winner_id
-ORDER BY COUNT(m.winner_id) DESC
-LIMIT 1;
-
-Question 465: What is the name of the winner who has won the most matches, and how many rank points does this player have? ||| wta_1
-SQL: SELECT p.first_name || ' ' || p.last_name AS winner_name, r.ranking_points
-FROM players p
-INNER JOIN (
-    SELECT winner_id, COUNT(*) AS win_count
-    FROM matches
-    GROUP BY winner_id
-    ORDER BY win_count DESC
-    LIMIT 1
-) AS top_winner ON p.player_id = top_winner.winner_id
-INNER JOIN rankings r ON p.player_id = r.player_id
-ORDER BY r.ranking_date DESC
-LIMIT 1;
-
-Question 471: What are the first names of all players, and their average rankings? ||| wta_1
-SQL: SELECT p.first_name, AVG(r.ranking) AS average_ranking
-FROM players p
-INNER JOIN rankings r ON p.player_id = r.player_id
-GROUP BY p.first_name;
-
-Question 473: What are the first names of all players, and their total ranking points? ||| wta_1
-SQL: SELECT p.first_name, SUM(r.ranking_points) AS total_ranking_points
-FROM players p
-INNER JOIN rankings r ON p.player_id = r.player_id
-GROUP BY p.first_name;
-
-Question 527: What are the names and ids of every course with less than 2 sections? ||| student_transcripts_tracking
-SQL: SELECT DISTINCT c.course_id, c.course_name
-FROM Courses c
-LEFT JOIN Sections s ON c.course_id = s.course_id
-GROUP BY c.course_id, c.course_name
-HAVING COUNT(s.section_id) < 2;
-
-Question 536: Who is enrolled in a Bachelor degree program? List the first name, middle name, last name. ||| student_transcripts_tracking
-SQL: SELECT DISTINCT s.first_name, s.middle_name, s.last_name
-FROM Students s
-INNER JOIN Student_Enrolment se ON s.student_id = se.student_id
-INNER JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id
-WHERE LOWER(dp.degree_summary_name) LIKE '%bachelor%';
-
-Question 537: What are the first, middle, and last names for everybody enrolled in a Bachelors program? ||| student_transcripts_tracking
-SQL: SELECT DISTINCT s.first_name, s.middle_name, s.last_name
-FROM Students s
-INNER JOIN Student_Enrolment se ON s.student_id = se.student_id
-INNER JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id
-WHERE LOWER(dp.degree_summary_name) LIKE '%bachelor%';
-
-Question 548: What is the name of the course with the most number of enrollments? ||| student_transcripts_tracking
-SQL: SELECT c.course_name
-FROM Courses c
-JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id
-GROUP BY c.course_id, c.course_name
-ORDER BY COUNT(DISTINCT sec.student_enrolment_id) DESC
-LIMIT 1;
-
-Question 549: What is the name of the course with the most students enrolled? ||| student_transcripts_tracking
-SQL: SELECT c.course_name
-FROM Courses c
-INNER JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id
-GROUP BY c.course_id, c.course_name
-ORDER BY COUNT(DISTINCT sec.student_enrolment_id) DESC
-LIMIT 1;
-
-Question 573: What is the maximum number of times that a course shows up in different transcripts, and what is that course's enrollment id? ||| student_transcripts_tracking
-SQL: SELECT sec.course_id, COUNT(DISTINCT tc.transcript_id) AS transcript_count
-FROM Student_Enrolment_Courses sec
-INNER JOIN Transcript_Contents tc ON sec.student_course_id = tc.student_course_id
-GROUP BY sec.course_id
-ORDER BY transcript_count DESC
-LIMIT 1;
-
-Question 633: What are the package options and the name of the series for the TV Channel that supports high-definition TV? ||| tvshow
-SQL: SELECT DISTINCT Package_Option, series_name
-FROM TV_Channel
-WHERE LOWER(Hight_definition_TV) = 'yes';
-
-Question 637: What are the countries that are not playing cartoons written by Todd Casey? ||| tvshow
-SQL: SELECT DISTINCT LOWER(Country)
-FROM TV_Channel
-WHERE LOWER(id) NOT IN (
-    SELECT DISTINCT LOWER(Channel)
-    FROM Cartoon
-    WHERE LOWER(Written_by) = 'todd casey'
-);
-
-Question 638: Find the series name and country of the TV channel that is playing some cartoons directed by Ben Jones and Michael Chang? ||| tvshow
-SQL: SELECT DISTINCT 
-    LOWER(tc.series_name) AS series_name, 
-    LOWER(tc.Country) AS country
-FROM 
-    TV_Channel tc
-INNER JOIN 
-    Cartoon c ON LOWER(tc.id) = LOWER(c.Channel)
-WHERE 
-    LOWER(c.Directed_by) IN ('ben jones', 'michael chang');
-
-Question 699: What is the area code in which the most voters voted? ||| voter_1
-SQL: SELECT area_code
-FROM AREA_CODE_STATE
-JOIN (
-    SELECT SUBSTR(phone_number, 1, 3) AS area_code, COUNT(DISTINCT vote_id) AS vote_count
-    FROM VOTES
-    GROUP BY area_code
-    ORDER BY vote_count DESC
-    LIMIT 1
-) AS vote_counts ON AREA_CODE_STATE.area_code = vote_counts.area_code;
-
-Question 701: List the area codes in which voters voted both for the contestant "Tabatha Gehling" and the contestant "Kelly Clauss." ||| voter_1
-SQL: SELECT DISTINCT acs.area_code
-FROM VOTES v1
-INNER JOIN VOTES v2 ON v1.phone_number = v2.phone_number
-INNER JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number
-INNER JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number
-INNER JOIN AREA_CODE_STATE acs ON v1.state = acs.state
-WHERE LOWER(c1.contestant_name) = 'tabatha gehling'
-  AND LOWER(c2.contestant_name) = 'kelly clauss';
-
-Question 731: What is the average GNP and total population in all nations whose government is US territory? ||| world_1
-SQL: SELECT AVG(GNP) AS AverageGNP, SUM(Population) AS TotalPopulation
-FROM country
-WHERE LOWER(GovernmentForm) = 'us territory';
-
-Question 732: Give the mean GNP and total population of nations which are considered US territory. ||| world_1
-SQL: SELECT AVG(c.GNP) AS MeanGNP, SUM(c.Population) AS TotalPopulation
-FROM country c
-WHERE LOWER(c.Name) LIKE '%united states%'
-
-Question 741: What is the name of the country that speaks the largest number of languages? ||| world_1
-SQL: SELECT c.Name
-FROM country c
-INNER JOIN countrylanguage cl ON c.Code = cl.CountryCode
-GROUP BY c.Code
-ORDER BY COUNT(DISTINCT cl.Language) DESC
-LIMIT 1;
-
-Question 742: Give the name of the nation that uses the greatest number of languages. ||| world_1
-SQL: SELECT country.Name
-FROM country
-INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-GROUP BY country.Code
-ORDER BY COUNT(DISTINCT countrylanguage.Language) DESC
-LIMIT 1;
-
-Question 780: Return the country codes for countries that do not speak English. ||| world_1
-SQL: SELECT DISTINCT c.Code
-FROM country c
-WHERE c.Code NOT IN (
-    SELECT cl.CountryCode
-    FROM countrylanguage cl
-    WHERE LOWER(cl.Language) = 'english'
-);
-
-Question 798: What are the different government forms and what is the total population of each for government forms that have an average life expectancy greater than 72? ||| world_1
-SQL: SELECT DISTINCT c.GovernmentForm, SUM(c.Population) AS TotalPopulation
-FROM country c
-WHERE c.GovernmentForm IN (
-    SELECT GovernmentForm
-    FROM country
-    GROUP BY GovernmentForm
-    HAVING AVG(LifeExpectancy) > 72
-)
-GROUP BY c.GovernmentForm;
-
-Question 821: What are the codes of countries where Spanish is spoken by the largest percentage of people? ||| world_1
-SQL: SELECT CountryCode
-FROM countrylanguage
-WHERE LOWER(Language) = 'spanish'
-ORDER BY Percentage DESC
-LIMIT 1;
-
-Question 845: Show the name of the conductor that has conducted the most number of orchestras. ||| orchestra
-SQL: SELECT Name
-FROM conductor
-WHERE Conductor_ID = (
-    SELECT Conductor_ID
-    FROM orchestra
-    GROUP BY Conductor_ID
-    ORDER BY COUNT(DISTINCT Orchestra_ID) DESC
-    LIMIT 1
-);
-
-Question 867: Show all the grades of the high schoolers. ||| network_1
-SQL: SELECT DISTINCT grade FROM Highschooler;
-
-Question 884: How many friends does each student have? ||| network_1
-SQL: SELECT Highschooler.ID, Highschooler.name, COUNT(DISTINCT Friend.friend_id) AS friend_count
-FROM Highschooler
-INNER JOIN Friend ON Highschooler.ID = Friend.student_id
-GROUP BY Highschooler.ID, Highschooler.name;
-
-Question 885: Show the names of high school students and their corresponding number of friends. ||| network_1
-SQL: SELECT H.name, COUNT(DISTINCT F.friend_id) AS number_of_friends
-FROM Highschooler H
-LEFT JOIN Friend F ON H.ID = F.student_id
-GROUP BY H.ID;
-
-Question 886: What are the names of the high schoolers and how many friends does each have? ||| network_1
-SQL: SELECT H.name, COUNT(DISTINCT F.friend_id) AS number_of_friends
-FROM Highschooler H
-LEFT JOIN Friend F ON H.ID = F.student_id
-GROUP BY H.ID;
-
-Question 921: What is the average age of the dogs who have gone through any treatments? ||| dog_kennels
-SQL: SELECT AVG(CAST(d.age AS INTEGER)) AS average_age
-FROM Dogs d
-INNER JOIN Treatments t ON d.dog_id = t.dog_id;
-
-Question 922: Find the average age of the dogs who went through treatments. ||| dog_kennels
-SQL: SELECT AVG(CAST(age AS INTEGER)) AS average_age
-FROM Dogs
-WHERE dog_id IN (SELECT DISTINCT dog_id FROM Treatments);
-
-Question 982: Find the number of owners who do not own any dogs at this moment. ||| dog_kennels
-SQL: SELECT COUNT(DISTINCT o.owner_id) AS number_of_owners
-FROM Owners o
-LEFT JOIN Dogs d ON o.owner_id = d.owner_id
-WHERE d.dog_id IS NULL;
-
-Question 997: What are all the possible breed type and size type combinations? ||| dog_kennels
-SQL: SELECT DISTINCT b.breed_name, s.size_description
-FROM Breeds b
-CROSS JOIN Sizes s;
-
-Question 999: List the first name of all the professionals along with the description of the treatment they have done. ||| dog_kennels
-SQL: SELECT DISTINCT p.first_name, tt.treatment_type_description
-FROM Professionals p
-INNER JOIN Treatments t ON p.professional_id = t.professional_id
-INNER JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
-
-Question 1000: What are each professional's first name and description of the treatment they have performed? ||| dog_kennels
-SQL: SELECT DISTINCT 
-    p.first_name, 
-    tt.treatment_type_description
-FROM 
-    Professionals p
-INNER JOIN 
-    Treatments t ON p.professional_id = t.professional_id
-INNER JOIN 
-    Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
-
-Question 1025:  Show the names of singers and the total sales of their songs . ||| singer
-SQL: SELECT s.Name, SUM(so.Sales) AS Total_Sales
-FROM singer s
-INNER JOIN song so ON s.Singer_ID = so.Singer_ID
-GROUP BY s.Singer_ID, s.Name;
-
-Question 1034:  What are the names of properties that are either houses or apartments with more than 1 room ? ||| real_estate_properties
-SQL: SELECT DISTINCT property_name
-FROM Properties
-WHERE room_count > 1
-AND property_type_code IN (
-    SELECT property_type_code
-    FROM Ref_Property_Types
-    WHERE LOWER(property_type_description) IN ('house', 'apartment')
-);
-
+SELECT s.Name AS Stadium_Name, COUNT(c.concert_ID) AS Number_of_Concerts FROM stadium s INNER JOIN concert c ON s.Stadium_ID = c.Stadium_ID GROUP BY s.Stadium_ID	concert_singer
+SELECT s.Name AS Stadium_Name, COUNT(DISTINCT c.concert_ID) AS Number_of_Concerts FROM stadium s INNER JOIN concert c ON s.Stadium_ID = c.Stadium_ID GROUP BY s.Stadium_ID	concert_singer
+SELECT s.Name, COUNT(DISTINCT sic.concert_ID) AS Number_of_Concerts FROM singer s INNER JOIN singer_in_concert sic ON s.Singer_ID = sic.Singer_ID GROUP BY s.Name	concert_singer
+SELECT s.Name, COUNT(DISTINCT sic.concert_ID) AS Number_of_Concerts FROM singer s INNER JOIN singer_in_concert sic ON s.Singer_ID = sic.Singer_ID GROUP BY s.Name	concert_singer
+SELECT DISTINCT s.StuID FROM Student s WHERE s.StuID NOT IN ( SELECT hp.StuID FROM Has_Pet hp INNER JOIN Pets p ON hp.PetID = p.PetID WHERE LOWER(p.PetType) = 'cat')	pets_1
+SELECT DISTINCT s.Fname, s.Age FROM Student s INNER JOIN Has_Pet hp ON s.StuID = hp.StuID	pets_1
+SELECT c.Continent, COUNT(DISTINCT cm.Id) AS CarMakerCount FROM continents c INNER JOIN countries co ON c.ContId = co.Continent INNER JOIN car_makers cm ON LOWER(cm.Country) = LOWER(co.CountryName) GROUP BY c.Continent	car_1
+SELECT COUNT(DISTINCT cm.Id) AS NumberOfCarMakers FROM car_makers cm INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName) WHERE LOWER(c.CountryName) = 'france'	car_1
+SELECT COUNT(DISTINCT cm.Id) AS NumberOfMakers FROM car_makers cm INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName) WHERE LOWER(c.CountryName) = 'france'	car_1
+SELECT COUNT(DISTINCT ml.ModelId) AS NumberOfModels FROM model_list ml INNER JOIN car_makers cm ON ml.Maker = cm.Id WHERE LOWER(cm.Country) = 'usa'	car_1
+SELECT COUNT(DISTINCT ml.ModelId) AS ModelCount FROM model_list ml INNER JOIN car_makers cm ON ml.Maker = cm.Id INNER JOIN countries c ON LOWER(cm.Country) = LOWER(c.CountryName) WHERE LOWER(c.CountryName) = 'usa'	car_1
+SELECT DISTINCT LOWER(countries.CountryName) AS CountryName FROM countries INNER JOIN continents ON countries.Continent = continents.ContId INNER JOIN car_makers ON LOWER(car_makers.Country) = LOWER(countries.CountryName) WHERE LOWER(continents.Continent) = 'europe' GROUP BY countries.CountryId HAVING COUNT(DISTINCT car_makers.Id) >= 3	car_1
+SELECT DISTINCT LOWER(countries.CountryName) AS CountryName FROM countries INNER JOIN car_makers ON LOWER(countries.CountryName) = LOWER(car_makers.Country) WHERE countries.Continent = (SELECT ContId FROM continents WHERE LOWER(Continent) = 'europe') GROUP BY countries.CountryName HAVING COUNT(DISTINCT car_makers.Id) >= 3	car_1
+SELECT Cylinders FROM cars_data WHERE Id = ( SELECT MakeId FROM car_names WHERE LOWER(Make) = 'volvo' ORDER BY Accelerate ASC LIMIT 1) LIMIT 1	car_1
+SELECT DISTINCT ml.Model FROM model_list ml INNER JOIN car_makers cm ON ml.Maker = cm.Id INNER JOIN car_names cn ON ml.Model = cn.Model INNER JOIN cars_data cd ON cn.MakeId = cd.Id WHERE cd.Weight < 3500 AND LOWER(cm.FullName) != 'ford motor company'	car_1
+SELECT a.Airline FROM airlines a INNER JOIN flights f ON a.uid = f.Airline GROUP BY a.Airline ORDER BY COUNT(f.FlightNo) DESC LIMIT 1	flight_2
+SELECT a.Abbreviation, a.Country FROM airlines a JOIN ( SELECT Airline, COUNT(*) AS flight_count FROM flights GROUP BY Airline ORDER BY flight_count ASC LIMIT 1) AS min_flights ON a.uid = min_flights.Airline	flight_2
+SELECT a.Abbreviation, a.Country FROM airlines a JOIN ( SELECT f.Airline, COUNT(*) AS flight_count FROM flights f GROUP BY f.Airline ORDER BY flight_count ASC LIMIT 1) AS min_flights ON a.uid = min_flights.Airline	flight_2
+SELECT s.Name AS Shop_Name, COUNT(DISTINCT h.Employee_ID) AS Number_of_Employees FROM shop s INNER JOIN hiring h ON s.Shop_ID = h.Shop_ID GROUP BY s.Shop_ID	employee_hire_evaluation
+SELECT s.Name AS Shop_Name, COUNT(DISTINCT h.Employee_ID) AS Number_of_Employees FROM shop s INNER JOIN hiring h ON s.Shop_ID = h.Shop_ID GROUP BY s.Shop_ID	employee_hire_evaluation
+SELECT  t.Template_ID,  COUNT(DISTINCT d.Document_ID) AS Number_of_Documents FROM  Templates t INNER JOIN  Documents d ON t.Template_ID = d.Template_ID GROUP BY  t.Template_ID	cre_Doc_Template_Mgt
+SELECT t.Template_ID, t.Template_Type_Code FROM Templates t JOIN Documents d ON t.Template_ID = d.Template_ID GROUP BY t.Template_ID, t.Template_Type_Code ORDER BY COUNT(DISTINCT d.Document_ID) DESC LIMIT 1	cre_Doc_Template_Mgt
+SELECT t.Template_ID, t.Template_Type_Code FROM Templates t JOIN Documents d ON t.Template_ID = d.Template_ID GROUP BY t.Template_ID, t.Template_Type_Code ORDER BY COUNT(DISTINCT d.Document_ID) DESC LIMIT 1	cre_Doc_Template_Mgt
+SELECT  rtt.Template_Type_Code,  COUNT(DISTINCT d.Document_ID) AS Number_of_Documents FROM  Ref_Template_Types rtt INNER JOIN  Templates t ON rtt.Template_Type_Code = t.Template_Type_Code INNER JOIN  Documents d ON t.Template_ID = d.Template_ID GROUP BY  rtt.Template_Type_Code	cre_Doc_Template_Mgt
+SELECT DISTINCT t.Template_Type_Code, COUNT(d.Document_ID) AS Document_Count FROM Templates t INNER JOIN Documents d ON t.Template_ID = d.Template_ID GROUP BY t.Template_Type_Code	cre_Doc_Template_Mgt
+SELECT DISTINCT rtt.Template_Type_Code FROM Ref_Template_Types rtt LEFT JOIN Templates t ON rtt.Template_Type_Code = t.Template_Type_Code LEFT JOIN Documents d ON t.Template_ID = d.Template_ID WHERE d.Document_ID IS NULL	cre_Doc_Template_Mgt
+SELECT DISTINCT rtt.Template_Type_Code FROM Ref_Template_Types rtt LEFT JOIN Templates t ON rtt.Template_Type_Code = t.Template_Type_Code LEFT JOIN Documents d ON t.Template_ID = d.Template_ID WHERE d.Document_ID IS NULL	cre_Doc_Template_Mgt
+SELECT  d.Document_ID,  COUNT(p.Paragraph_ID) AS Number_of_Paragraphs FROM  Documents d INNER JOIN  Paragraphs p ON d.Document_ID = p.Document_ID GROUP BY  d.Document_ID ORDER BY  d.Document_ID	cre_Doc_Template_Mgt
+SELECT  d.Document_ID,  d.Document_Name,  COUNT(p.Paragraph_ID) AS Number_of_Paragraphs FROM  Documents d INNER JOIN  Paragraphs p ON d.Document_ID = p.Document_ID GROUP BY  d.Document_ID,  d.Document_Name	cre_Doc_Template_Mgt
+SELECT  d.Document_ID,  d.Document_Name,  COUNT(p.Paragraph_ID) AS Number_of_Paragraphs FROM  Documents d INNER JOIN  Paragraphs p ON d.Document_ID = p.Document_ID GROUP BY  d.Document_ID,  d.Document_Name	cre_Doc_Template_Mgt
+SELECT t.Name, COUNT(DISTINCT ca.Course_ID) AS NumberOfCourses FROM teacher t INNER JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID GROUP BY t.Teacher_ID	course_teach
+SELECT t.Name, COUNT(DISTINCT ca.Course_ID) AS Course_Count FROM teacher t INNER JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID GROUP BY t.Name	course_teach
+SELECT DISTINCT v.ID, v.Name, v.Age FROM visitor v INNER JOIN visit vi ON v.ID = vi.visitor_ID GROUP BY v.ID, v.Name, v.Age HAVING COUNT(DISTINCT vi.Museum_ID) > 1	museum_visit
+SELECT COUNT(DISTINCT match_num)  FROM matches  WHERE year IN (2013, 2016)	wta_1
+SELECT p.first_name, p.last_name, m.winner_rank_points FROM players p INNER JOIN matches m ON p.player_id = m.winner_id GROUP BY m.winner_id ORDER BY COUNT(m.winner_id) DESC LIMIT 1	wta_1
+SELECT p.first_name || ' ' || p.last_name AS winner_name, r.ranking_points FROM players p INNER JOIN ( SELECT winner_id, COUNT(*) AS win_count FROM matches GROUP BY winner_id ORDER BY win_count DESC LIMIT 1) AS top_winner ON p.player_id = top_winner.winner_id INNER JOIN rankings r ON p.player_id = r.player_id ORDER BY r.ranking_date DESC LIMIT 1	wta_1
+SELECT p.first_name, AVG(r.ranking) AS average_ranking FROM players p INNER JOIN rankings r ON p.player_id = r.player_id GROUP BY p.first_name	wta_1
+SELECT p.first_name, SUM(r.ranking_points) AS total_ranking_points FROM players p INNER JOIN rankings r ON p.player_id = r.player_id GROUP BY p.first_name	wta_1
+SELECT DISTINCT c.course_id, c.course_name FROM Courses c LEFT JOIN Sections s ON c.course_id = s.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(s.section_id) < 2	student_transcripts_tracking
+SELECT DISTINCT s.first_name, s.middle_name, s.last_name FROM Students s INNER JOIN Student_Enrolment se ON s.student_id = se.student_id INNER JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id WHERE LOWER(dp.degree_summary_name) LIKE '%bachelor%'	student_transcripts_tracking
+SELECT DISTINCT s.first_name, s.middle_name, s.last_name FROM Students s INNER JOIN Student_Enrolment se ON s.student_id = se.student_id INNER JOIN Degree_Programs dp ON se.degree_program_id = dp.degree_program_id WHERE LOWER(dp.degree_summary_name) LIKE '%bachelor%'	student_transcripts_tracking
+SELECT c.course_name FROM Courses c JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id GROUP BY c.course_id, c.course_name ORDER BY COUNT(DISTINCT sec.student_enrolment_id) DESC LIMIT 1	student_transcripts_tracking
+SELECT c.course_name FROM Courses c INNER JOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id GROUP BY c.course_id, c.course_name ORDER BY COUNT(DISTINCT sec.student_enrolment_id) DESC LIMIT 1	student_transcripts_tracking
+SELECT sec.course_id, COUNT(DISTINCT tc.transcript_id) AS transcript_count FROM Student_Enrolment_Courses sec INNER JOIN Transcript_Contents tc ON sec.student_course_id = tc.student_course_id GROUP BY sec.course_id ORDER BY transcript_count DESC LIMIT 1	student_transcripts_tracking
+SELECT DISTINCT Package_Option, series_name FROM TV_Channel WHERE LOWER(Hight_definition_TV) = 'yes'	tvshow
+SELECT DISTINCT LOWER(Country) FROM TV_Channel WHERE LOWER(id) NOT IN ( SELECT DISTINCT LOWER(Channel) FROM Cartoon WHERE LOWER(Written_by) = 'todd casey')	tvshow
+SELECT DISTINCT  LOWER(tc.series_name) AS series_name,  LOWER(tc.Country) AS country FROM  TV_Channel tc INNER JOIN  Cartoon c ON LOWER(tc.id) = LOWER(c.Channel) WHERE  LOWER(c.Directed_by) IN ('ben jones', 'michael chang')	tvshow
+SELECT area_code FROM AREA_CODE_STATE JOIN ( SELECT SUBSTR(phone_number, 1, 3) AS area_code, COUNT(DISTINCT vote_id) AS vote_count FROM VOTES GROUP BY area_code ORDER BY vote_count DESC LIMIT 1) AS vote_counts ON AREA_CODE_STATE.area_code = vote_counts.area_code	voter_1
+SELECT DISTINCT acs.area_code FROM VOTES v1 INNER JOIN VOTES v2 ON v1.phone_number = v2.phone_number INNER JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number INNER JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number INNER JOIN AREA_CODE_STATE acs ON v1.state = acs.state WHERE LOWER(c1.contestant_name) = 'tabatha gehling' AND LOWER(c2.contestant_name) = 'kelly clauss'	voter_1
+SELECT AVG(GNP) AS AverageGNP, SUM(Population) AS TotalPopulation FROM country WHERE LOWER(GovernmentForm) = 'us territory'	world_1
+SELECT AVG(c.GNP) AS MeanGNP, SUM(c.Population) AS TotalPopulation FROM country c WHERE LOWER(c.Name) LIKE '%united states%'	world_1
+SELECT c.Name FROM country c INNER JOIN countrylanguage cl ON c.Code = cl.CountryCode GROUP BY c.Code ORDER BY COUNT(DISTINCT cl.Language) DESC LIMIT 1	world_1
+SELECT country.Name FROM country INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode GROUP BY country.Code ORDER BY COUNT(DISTINCT countrylanguage.Language) DESC LIMIT 1	world_1
+SELECT DISTINCT c.Code FROM country c WHERE c.Code NOT IN ( SELECT cl.CountryCode FROM countrylanguage cl WHERE LOWER(cl.Language) = 'english')	world_1
+SELECT DISTINCT c.GovernmentForm, SUM(c.Population) AS TotalPopulation FROM country c WHERE c.GovernmentForm IN ( SELECT GovernmentForm FROM country GROUP BY GovernmentForm HAVING AVG(LifeExpectancy) > 72) GROUP BY c.GovernmentForm	world_1
+SELECT CountryCode FROM countrylanguage WHERE LOWER(Language) = 'spanish' ORDER BY Percentage DESC LIMIT 1	world_1
+SELECT Name FROM conductor WHERE Conductor_ID = ( SELECT Conductor_ID FROM orchestra GROUP BY Conductor_ID ORDER BY COUNT(DISTINCT Orchestra_ID) DESC LIMIT 1)	orchestra
+SELECT DISTINCT grade FROM Highschooler;
+SELECT Highschooler.ID, Highschooler.name, COUNT(DISTINCT Friend.friend_id) AS friend_count FROM Highschooler INNER JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID, Highschooler.name	network_1
+SELECT H.name, COUNT(DISTINCT F.friend_id) AS number_of_friends FROM Highschooler H LEFT JOIN Friend F ON H.ID = F.student_id GROUP BY H.ID	network_1
+SELECT H.name, COUNT(DISTINCT F.friend_id) AS number_of_friends FROM Highschooler H LEFT JOIN Friend F ON H.ID = F.student_id GROUP BY H.ID	network_1
+SELECT AVG(CAST(d.age AS INTEGER)) AS average_age FROM Dogs d INNER JOIN Treatments t ON d.dog_id = t.dog_id	dog_kennels
+SELECT AVG(CAST(age AS INTEGER)) AS average_age FROM Dogs WHERE dog_id IN (SELECT DISTINCT dog_id FROM Treatments)	dog_kennels
+SELECT COUNT(DISTINCT o.owner_id) AS number_of_owners FROM Owners o LEFT JOIN Dogs d ON o.owner_id = d.owner_id WHERE d.dog_id IS NULL	dog_kennels
+SELECT DISTINCT b.breed_name, s.size_description FROM Breeds b CROSS JOIN Sizes s	dog_kennels
+SELECT DISTINCT p.first_name, tt.treatment_type_description FROM Professionals p INNER JOIN Treatments t ON p.professional_id = t.professional_id INNER JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code	dog_kennels
+SELECT DISTINCT  p.first_name,  tt.treatment_type_description FROM  Professionals p INNER JOIN  Treatments t ON p.professional_id = t.professional_id INNER JOIN  Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code	dog_kennels
+SELECT s.Name, SUM(so.Sales) AS Total_Sales FROM singer s INNER JOIN song so ON s.Singer_ID = so.Singer_ID GROUP BY s.Singer_ID, s.Name	singer
+SELECT DISTINCT property_name FROM Properties WHERE room_count > 1 AND property_type_code IN ( SELECT property_type_code FROM Ref_Property_Types WHERE LOWER(property_type_description) IN ('house', 'apartment'))	real_estate_properties

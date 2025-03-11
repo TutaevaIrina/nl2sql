@@ -28,6 +28,11 @@ import argparse
 from process_sql import get_schema, Schema, get_sql
 from exec_eval import eval_exec_match
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
+tables_json_path = os.path.join(base_dir, "..", "..", "..", "spider_data", "spider_data", "tables.json")
+database_folder = os.path.join(base_dir, "..", "..", "..", "spider_data", "spider_data", "database")
+
+
 # Flag to disable value evaluation
 DISABLE_VALUE = True
 # Flag to disable distinct in select evaluation
@@ -926,8 +931,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--gold', dest='gold', type=str, default='gold_example.txt')
     parser.add_argument('--pred', dest='pred', type=str, default='pred_example.txt')
-    parser.add_argument('--db', dest='db', type=str, default='C:/Users/itu/Documents/Bachelor/spider_data/spider_data/database')
-    parser.add_argument('--table', dest='table', type=str, default='C:/Users/itu/Documents/Bachelor/spider_data/spider_data/tables.json')
+    parser.add_argument('--db', dest='db', type=str, default=database_folder)
+    parser.add_argument('--table', dest='table', type=str, default=tables_json_path)
     parser.add_argument('--etype', dest='etype', type=str, default='all', help="evaluation type, exec for test suite accuracy, match for the original exact set match accuracy",
                          choices=('all', 'exec', 'match'))
     parser.add_argument('--plug_value', default=False, action='store_true')

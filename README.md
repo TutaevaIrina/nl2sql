@@ -8,12 +8,15 @@ The **Spider benchmark** is described in the following research paper:
 **"Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task"**  
 **[Paper link](https://arxiv.org/abs/1809.08887)**
 
+---
+
 ## **Project Structure**
 The project is organized into two main directories:  
 
 - The **`prompt_strategies/`**  contains different **prompting techniques** for SQL query generation.    
-- The **`rag/`** directory implements a **RAG pipeline**, which retrieves relevant database schema information before generating SQL queries.  
+- The **`rag/`** directory implements a **RAG pipeline**, which retrieves relevant database schema information before generating SQL queries.
 
+---
 
 ## **Description of `prompt_strategies/`**
 The **`prompt_strategies/`** directory contains four different **prompting techniques** used for SQL query generation:
@@ -54,7 +57,9 @@ It retrieves relevant database schema information using **FAISS** and generates 
 - **`faiss_index.idx`** – FAISS index storing schema embeddings.  
 - **`faiss_text_data.json`** – JSON file storing the raw schema text data.  
 - **`questions.txt`** – Contains user questions for SQL generation.  
-- **`pred_example.txt`** – Stores the generated SQL queries for evaluation.  
+- **`pred_example.txt`** – Stores the generated SQL queries for evaluation. 
+
+---
 
 ## **How Does This Project Work?**
 
@@ -74,14 +79,14 @@ This project supports two main approaches for **Text-to-SQL generation**:
 
 ### **2. Generate SQL using LLMs**
 
-#### **📌 Prompt-Based Approaches (`prompt_strategies/`)**
+#### **Prompt-Based Approaches (`prompt_strategies/`)**
 - Uses **Zero-Shot, Few-Shot, or Enhanced Few-Shot Prompting**.  
 - The model receives:  
   - A **SQL question**  
   - The **database schema**  
   - (Optionally) **example SQL queries** for better generalization  
 
-#### **📌 RAG-Based SQL Generation (`rag/`)**
+#### **RAG-Based SQL Generation (`rag/`)**
 - Uses **FAISS** to retrieve the most relevant schema information.  
 - The LLM receives:  
   - A **SQL question**  
@@ -109,6 +114,7 @@ Regardless of whether SQL queries are generated using **prompting techniques** o
 | **Limitations**        | Context length constraints and costs       | FAISS may retrieve incorrect or      |
 |                        |                                            | incomplete schema                    |
 
+---
 
 ## **Evaluation Results**
 This section presents the accuracy of generated SQL queries using **both prompting-based approaches and RAG-based retrieval**.
@@ -133,7 +139,7 @@ This section presents the accuracy of generated SQL queries using **both prompti
 - A **separate manual evaluation** was also conducted, but these results are **not included here**.  
 - The **manual evaluation** assessed query correctness beyond execution accuracy, considering logical equivalence and meaningful variations in query structure.  
 
-
+---
 
 ## **NLTK Tokenizer Models: Manual Installation**
 The project uses the **NLTK `punkt` tokenizer** by evaluating for text processing.  
@@ -150,7 +156,6 @@ Download the following tokenizer models from the official **NLTK repository**:
 - **Punkt Tokenizer Models (`punkt_tab.zip`)**  
   - [Download `punkt_tab.zip`](https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt_tab.zip)  
 
----
 
 ### **2. Extract the Files to the Correct Location**
 Once downloaded, extract the **`punkt.zip`** and **`punkt_tab.zip`** files

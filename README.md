@@ -67,15 +67,11 @@ This project supports two main approaches for **Text-to-SQL generation**:
 - **Prompt-Based Approaches** (Zero-Shot, Few-Shot, and Enhanced Few-Shot Prompting)  
 - **Retrieval-Augmented Generation (RAG)**  
 
----
-
 ### **1. Load questions and database schema**
 - **Questions** are stored in **`questions.txt`** (or **`questions_experiment.txt`**).  
 - **Schema information** is extracted from **`tables.json`** from the Spider Dataset (https://yale-lily.github.io/spider).  
 - In **prompt-based approaches**, the schema is **directly included in the prompt**.  
 - In **RAG**, the schema is **embedded and stored in FAISS for retrieval**.  
-
----
 
 ### **2. Generate SQL using LLMs**
 
@@ -92,8 +88,6 @@ This project supports two main approaches for **Text-to-SQL generation**:
   - A **SQL question**  
   - The **retrieved schema from FAISS**  
 - This allows **handling larger schemas** without overloading the prompt.  
-
----
 
 ### **3. Evaluate Generated SQL Queries**
 Regardless of whether SQL queries are generated using **prompting techniques** or **RAG-based retrieval**, the evaluation process follows the same approach:

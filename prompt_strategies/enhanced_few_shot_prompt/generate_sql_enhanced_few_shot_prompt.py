@@ -12,10 +12,8 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 tables_json_path = os.path.join(base_dir, "..", "..", "..", "spider_data", "spider_data", "tables.json")
 
 
-def load_schema(database_name):
-    """
-    Loads the schema for the specified database from tables.json.
-    """
+# Loads the schema for the specified database from tables.json.
+def load_schema(database_name):    
     if not os.path.exists(tables_json_path):
         print("Error: tables.json file not found.")
         return None
@@ -58,12 +56,8 @@ def load_schema(database_name):
     print(f"Schema not found for database: {database_name}")
     return None
 
-
-def clean_output(raw_sql):
-    """
-    Cleans the raw SQL output to remove explanations, redundant text, and markers.
-    """
-    # Remove unnecessary text or explanations
+# Remove unnecessary text or explanations
+def clean_output(raw_sql):    
     if "```sql" in raw_sql:
         raw_sql = raw_sql.split("```sql")[-1]  # Get content after "```sql"
     if "```" in raw_sql:
@@ -78,11 +72,8 @@ def clean_output(raw_sql):
     ]
     return "\n".join(cleaned_lines).strip()
 
-
-def generate_sql(question, schema_metadata):
-    """
-    Generates SQL query for a given question and schema using GPT-4o.
-    """
+# Generates SQL query for a given question and schema using GPT-4o.
+def generate_sql(question, schema_metadata):    
     completion = client.chat.completions.create(
         model="gpt-4o",
         temperature=0,
